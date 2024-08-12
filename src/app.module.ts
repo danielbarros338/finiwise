@@ -6,7 +6,6 @@ import { Config } from './config/database.config';
 import { UserModule } from './user/user.module';
 import { WalletModule } from './wallet/wallet.module';
 import { CardModule } from './card/card.module';
-import { FlagCardModule } from './flag-card/flag-card.module';
 import { EarningModule } from './earning/earning.module';
 import { RevenueModule } from './revenue/revenue.module';
 
@@ -17,7 +16,6 @@ import { RevenueModule } from './revenue/revenue.module';
     UserModule,
     WalletModule,
     CardModule,
-    FlagCardModule,
     EarningModule,
     RevenueModule
   ],
