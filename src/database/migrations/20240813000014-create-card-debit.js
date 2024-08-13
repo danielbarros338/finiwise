@@ -35,6 +35,13 @@ module.exports = {
       paymentType: {
         type: Sequelize.CHAR(2),
         allowNull: false
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
       }
     })
   },

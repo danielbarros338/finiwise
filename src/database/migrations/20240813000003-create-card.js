@@ -26,6 +26,13 @@ module.exports = {
           key: 'userId'
         },
         onUpdate: 'CASCADE'
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
       }
     })
   },

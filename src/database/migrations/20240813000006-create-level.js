@@ -20,6 +20,13 @@ module.exports = {
       classification: {
         type: Sequelize.INTEGER,
         allowNull: false
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
       }
     })
   },

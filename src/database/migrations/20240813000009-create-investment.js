@@ -30,6 +30,13 @@ module.exports = {
         type: Sequelize.CHAR(3),
         allowNull: false
       },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+      }
     })
   },
 

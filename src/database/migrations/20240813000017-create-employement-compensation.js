@@ -22,6 +22,13 @@ module.exports = {
       company: {
         type: Sequelize.STRING(200),
         allowNull: false
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
       }
     })
   },
