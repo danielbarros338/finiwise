@@ -2,7 +2,7 @@ import { SequelizeModuleOptions } from "@nestjs/sequelize";
 import { Dialect } from "sequelize";
 import { config } from 'dotenv';
 
-import { User } from 'src/user/user.model';
+import { User } from 'src/database/models/user.model';
 
 config();
 
@@ -14,5 +14,4 @@ export const Config: SequelizeModuleOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   models: [User],
-  synchronize: true
 }
