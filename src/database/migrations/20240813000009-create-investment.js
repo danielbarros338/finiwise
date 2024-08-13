@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return await queryInterface.createTable('investments', {
-      investimentId: {
+      investmentId: {
         primaryKey: true,
         autoIncrement: true,
         unique: true,
@@ -30,24 +30,6 @@ module.exports = {
         type: Sequelize.CHAR(3),
         allowNull: false
       },
-      revenueInvestmentId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'revenueInvestments',
-          key: 'revenueInvestmentId'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
-      },
-      earningInvestmentId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'earningInvestments',
-          key: 'earningInvestmentId'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
-      }
     })
   },
 
