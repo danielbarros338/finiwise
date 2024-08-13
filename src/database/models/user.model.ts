@@ -1,8 +1,13 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Model, Table, HasOne, HasMany } from 'sequelize-typescript';
 import { DataType } from 'sequelize-typescript';
 
+import { Wallet } from './wallet.model';
+import { Card } from './card.model';
+import { Revenue } from './revenue.model';
+import { Earning } from './earning.model';
+
 @Table
-export class User extends Model {
+export class User extends Model<User> {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -20,4 +25,16 @@ export class User extends Model {
 
   @Column({ type: DataType.STRING(400), allowNull: false })
   public password: string;
+
+  @HasOne(() => Wallet, { foreignKey: 'userId', as: 'FK_wallet_user' })
+  public wallet: Wallet;
+
+  @HasMany(() => Card, { foreignKey: 'userId', as: 'FK_card_user' })
+  public cards: Card[];
+
+  @HasMany(() => Revenue, { foreignKey: 'userId', as: 'FK_revenue_user' })
+  public revenues: Revenue[];
+
+  @HasMany(() => Earning, { foreignKey: 'userId', as: 'FK_earning_user' })
+  public earnings: Earning[];
 }
