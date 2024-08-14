@@ -1,0 +1,5 @@
+{
+  "FIELD_REQUIRED": "Email, username, and password are required",
+  "USER_EXISTS": "User already exists",
+  "ERROR_SIGNING_UP": "An error occuried while signing up: "
+}

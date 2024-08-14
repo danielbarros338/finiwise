@@ -5,9 +5,12 @@ import { User } from '../../database/models/user.model';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 
+import { CryptoService } from '../../services/crypto.service';
+import { MessagesService } from 'src/services/messages.service';
+
 @Module({
   imports: [SequelizeModule.forFeature([User])],
-  providers: [UserService],
+  providers: [UserService, CryptoService, MessagesService],
   controllers: [UserController]
 })
 export class UserModule {}
