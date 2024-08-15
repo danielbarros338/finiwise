@@ -1,4 +1,12 @@
-import { Controller, Post, Req, Logger, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Req,
+  Logger,
+  HttpCode,
+  HttpStatus,
+  HttpException
+} from '@nestjs/common';
 import { Request } from 'express';
 
 import { AuthResponse } from 'src/interfaces/auth.interface';
@@ -15,6 +23,7 @@ export class AuthController {
     public messagesService: MessagesService
   ){}
 
+  @HttpCode(HttpStatus.OK)
   @Post('/signin')
   async signIn(@Req() req: Request): Promise<any> {
     this.logger.log(this.messagesService.getLogMessage('SIGNING_IN'));
@@ -28,6 +37,7 @@ export class AuthController {
     }
   }
 
+  @HttpCode(HttpStatus.CREATED)
   @Post('/signup')
   async signUp(@Req() req: Request): Promise<AuthResponse> {
     this.logger.log(this.messagesService.getLogMessage('CREATING_USER'));
@@ -40,4 +50,5 @@ export class AuthController {
       throw new HttpException(err.message, err.status);
     }
   }
+
 }

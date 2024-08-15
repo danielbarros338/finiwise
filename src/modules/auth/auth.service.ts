@@ -35,7 +35,7 @@ export class AuthService {
    */
   public async signUp(user: User): Promise<AuthResponse> {
     try {
-      this.verifyFields(user);
+      this.verifyFields(user, false);
       await this.verifyUserExists(user);
       this.validateEmail(user);
       this.validatePassword(user);
@@ -61,7 +61,7 @@ export class AuthService {
    */
   async signIn(userReq: any): Promise<any> {
     try {
-      this.verifyFields(userReq);
+      this.verifyFields(userReq, true);
       this.validateEmail(userReq);
       this.validatePassword(userReq);
 
@@ -75,9 +75,7 @@ export class AuthService {
 
       this.verifyPassword(userReq, user.password);
 
-      const payload = { userId: user.userId, user: user.user };
-
-      return 
+      return this.setJWT(user);
     } catch (err) {
       this.logger.error('signIn: \n' + err.message);
 
@@ -142,8 +140,12 @@ export class AuthService {
    * @param {User} user - The user object to be verified.
    * @throws {BadRequestException} If any of the required fields are missing.
    */
-  private verifyFields(user: User) {
-    if (!user.email || !user.password || !user.user) {
+  private verifyFields(user: User, isLogin: boolean) {
+    if ((!user.email || !user.password) && isLogin) {
+      this.logger.warn('verifyFields: \n' + this.messagesService.getErrorMessage('FIELD_REQUIRED'));
+
+      throw new BadRequestException(this.messagesService.getErrorMessage('FIELD_REQUIRED'))
+    } else if ((!user.email || !user.password || !user.user) && !isLogin) {
       this.logger.warn('verifyFields: \n' + this.messagesService.getErrorMessage('FIELD_REQUIRED'));
 
       throw new BadRequestException(this.messagesService.getErrorMessage('FIELD_REQUIRED'))
@@ -186,6 +188,12 @@ export class AuthService {
     user.password = this.cryptoService.encrypt(user.password);
   }
 
+  /**
+   * Generates a JWT token for the given user.
+   *
+   * @param {User} user - The user object containing the user's details.
+   * @return {Promise<AuthResponse>} A Promise that resolves with an AuthResponse object containing the JWT access token.
+   */
   public async setJWT(user: User): Promise<AuthResponse> {
     const payload = { userId: user.userId, user: user.user, email: user.email };
 
