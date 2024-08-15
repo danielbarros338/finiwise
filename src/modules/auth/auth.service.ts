@@ -37,6 +37,8 @@ export class AuthService {
     try {
       this.verifyFields(user);
       await this.verifyUserExists(user);
+      this.validateEmail(user);
+      this.validatePassword(user);
       this.encryptPassword(user);
 
       const response = await this.userService.createUser(user);
@@ -96,6 +98,38 @@ export class AuthService {
     }
 
     return passwordMatch;
+  }
+
+  /**
+   * Validates a user's email address against a regular expression.
+   *
+   * @param {User} user - The user object containing the email to be validated.
+   * @return {boolean} True if the email is valid, otherwise throws a BadRequestException.
+   */
+  private validateEmail(user: User): boolean {
+    const regEx =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if(regEx.test(user.email)) {
+      return true;
+    } else {
+      throw new BadRequestException(this.messagesService.getErrorMessage('EMAIL_NOT_VALID'));
+    };
+  }
+
+  /**
+   * Validates a user's password against a regular expression.
+   *
+   * @param {User} user - The user object containing the password to be validated.
+   * @return {boolean} True if the password is valid, otherwise throws a BadRequestException.
+   */
+  private validatePassword(user: User): boolean {
+    const regEx = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if(regEx.test(user.password)) {
+      return true;
+    } else {
+      throw new BadRequestException(this.messagesService.getErrorMessage('PASSWORD_NOT_VALID'));
+    };
   }
 
   /**
