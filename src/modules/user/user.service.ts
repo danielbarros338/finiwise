@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 
 import { UserCreatedResponse } from 'src/interfaces/user.interface';
@@ -39,33 +39,27 @@ export class UserService {
     } catch (err) {
       this.logger.error('createUser: \n' + err.message);
 
-      throw err;
+      throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_SIGNING_UP'));
     }
   }
 
-  /**
-   * Authenticates a user and returns their user ID and user object.
-   *
-   * @param {User} user - The user to be authenticated.
-   * @return {Promise<any>} An object containing the user ID and user object.
-   */
-  public async signIn(user: User): Promise<any> {
+  public async signIn(userReq: User): Promise<any> {
     try {
-      const userFound = await this.getUser(user);
+      const user = await this.getUser(userReq);
 
-      if (!userFound) {
-        this.logger.error('signIn: \n' + this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+      if (!user) {
+        this.logger.error('signIn: \n' + this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
 
-        throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+        throw new BadRequestException(this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
       }
 
-      this.verifyPassword(user, userFound.password);
+      this.verifyPassword(userReq, user.password);
 
-      return { userId: userFound.userId, user: userFound.user };
+      return { userId: user.userId, user: user.user };
     } catch (err) {
       this.logger.error('signIn: \n' + err.message);
 
-      throw err;
+      throw err
     }
   }
 
@@ -130,9 +124,9 @@ export class UserService {
     const passwordMatch = this.cryptoService.verifyPassword(user.password, hash);
 
     if (!passwordMatch) {
-      this.logger.error('verifyPassword: ' + this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
+      this.logger.error('verifyPassword: ' + this.messagesService.getErrorMessage('USER_NOT_FOUND'));
 
-      throw new UnauthorizedException(this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
+      throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
     }
 
     return passwordMatch;

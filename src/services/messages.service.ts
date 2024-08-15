@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import * as logMessages from '../config/texts/log-messages.json';
-import * as errorMessages from '../config/texts/error-messages.json';
+import * as logMessages from '../config/constants/log-messages.json';
+import * as errorMessages from '../config/constants/error-messages.json';
 
 @Injectable()
 export class MessagesService {
