@@ -4,7 +4,7 @@ import { pbkdf2Sync } from 'crypto';
 @Injectable()
 export class CryptoService {
   constructor() {}
-  public crypt(password: string): string {
+  public encrypt(password: string): string {
     return pbkdf2Sync(
       password,
       process.env.CRYPT_SALT,
