@@ -61,6 +61,10 @@ export class AuthService {
    */
   async signIn(userReq: any): Promise<any> {
     try {
+      this.verifyFields(userReq);
+      this.validateEmail(userReq);
+      this.validatePassword(userReq);
+
       const user = await this.userService.getUser(userReq);
 
       if (!user) {
