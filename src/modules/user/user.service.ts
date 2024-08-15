@@ -1,6 +1,5 @@
 import { BadRequestException, ConflictException, HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { HttpStatus } from '@nestjs/common';
 
 import { UserCreatedResponse } from 'src/interfaces/user.interface';
 
@@ -88,6 +87,25 @@ export class UserService {
    */
   public encryptPassword(user: User): void {
     user.password = this.cryptoService.encrypt(user.password);
+  }
+
+    /**
+   * Verifies if the provided password matches the user's password.
+   *
+   * @param {User} user - The user object containing the stored password.
+   * @param {string} password - The password to be verified.
+   * @return {boolean} True if the password matches, false otherwise.
+   */
+  public verifyPassword(user: User, hash: string): boolean {
+    const passwordMatch = this.cryptoService.verifyPassword(user.password, hash);
+
+    if (!passwordMatch) {
+      this.logger.error('verifyPassword: ' + this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+
+      throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+    }
+
+    return passwordMatch;
   }
 
   /**
