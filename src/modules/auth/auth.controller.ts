@@ -1,7 +1,7 @@
 import { Controller, Post, Req, Logger, HttpException } from '@nestjs/common';
 import { Request } from 'express';
 
-import { UserCreatedResponse } from 'src/interfaces/user.interface';
+import { AuthResponse } from 'src/interfaces/auth.interface';
 
 import { AuthService } from './auth.service';
 import { MessagesService } from '../../services/messages.service';
@@ -29,7 +29,7 @@ export class AuthController {
   }
 
   @Post('/signup')
-  async signUp(@Req() req: Request): Promise<UserCreatedResponse> {
+  async signUp(@Req() req: Request): Promise<AuthResponse> {
     this.logger.log(this.messagesService.getLogMessage('CREATING_USER'));
 
     try {

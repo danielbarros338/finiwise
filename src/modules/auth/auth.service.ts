@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { UserCreatedResponse } from 'src/interfaces/user.interface';
+import { AuthResponse } from 'src/interfaces/auth.interface';
 
 import { User } from '../../database/models/user.model';
 
@@ -33,7 +33,7 @@ export class AuthService {
    * @param {User} user - The user to be created.
    * @return {UserCreatedResponse} An object containing the user ID.
    */
-  public async signUp(user: User): Promise<UserCreatedResponse> {
+  public async signUp(user: User): Promise<AuthResponse> {
     try {
       this.verifyFields(user);
       await this.verifyUserExists(user);
@@ -45,11 +45,11 @@ export class AuthService {
       
       this.logger.log(this.messagesService.getLogMessage('USER_CREATED'));
 
-      return { userId: response.userId };
+      return this.setJWT(response);
     } catch (err) {
       this.logger.error('createUser: \n' + err.message);
 
-      throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_SIGNING_UP'));
+      throw err;
     }
   }
 
@@ -77,7 +77,7 @@ export class AuthService {
 
       const payload = { userId: user.userId, user: user.user };
 
-      return { access_token: await this.jwtService.signAsync(payload) };
+      return 
     } catch (err) {
       this.logger.error('signIn: \n' + err.message);
 
@@ -184,5 +184,11 @@ export class AuthService {
    */
   private encryptPassword(user: User): void {
     user.password = this.cryptoService.encrypt(user.password);
+  }
+
+  public async setJWT(user: User): Promise<AuthResponse> {
+    const payload = { userId: user.userId, user: user.user, email: user.email };
+
+    return { access_token: await this.jwtService.signAsync(payload) };
   }
 }

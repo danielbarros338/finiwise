@@ -1,7 +1,5 @@
-import { BadRequestException, ConflictException, HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-
-import { UserCreatedResponse } from 'src/interfaces/user.interface';
 
 import { User } from '../../database/models/user.model';
 
@@ -24,13 +22,13 @@ export class UserService {
    * @param {User} user - The user to be created.
    * @return {UserCreatedResponse} An object containing the user ID.
    */
-  public async createUser(user: User): Promise<UserCreatedResponse> {
+  public async createUser(user: User): Promise<User> {
     try {
       const response = await this.userRepository.create<User>(user);
       
       this.logger.log(this.messagesService.getLogMessage('USER_CREATED'));
 
-      return { userId: response.userId };
+      return response;
     } catch (err) {
       this.logger.error('createUser: \n' + err.message);
 
