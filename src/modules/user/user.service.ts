@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 
 import { UserCreatedResponse } from 'src/interfaces/user.interface';
@@ -25,17 +25,47 @@ export class UserService {
    * @param {User} user - The user to be created.
    * @return {UserCreatedResponse} An object containing the user ID.
    */
-  public async createUser(user: User): Promise<UserCreatedResponse> {
+  public async signUp(user: User): Promise<UserCreatedResponse> {
     try {
-      const response = await this.userRepository.create<User>(user);
+      this.verifyFields(user);
+      await this.verifyUserExists(user);
+      this.encryptPassword(user);
 
+      const response = await this.userRepository.create<User>(user);
+      
       this.logger.log(this.messagesService.getLogMessage('USER_CREATED'));
 
       return { userId: response.userId };
     } catch (err) {
       this.logger.error('createUser: \n' + err.message);
 
-      throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_SIGNING_UP'));
+      throw err;
+    }
+  }
+
+  /**
+   * Authenticates a user and returns their user ID and user object.
+   *
+   * @param {User} user - The user to be authenticated.
+   * @return {Promise<any>} An object containing the user ID and user object.
+   */
+  public async signIn(user: User): Promise<any> {
+    try {
+      const userFound = await this.getUser(user);
+
+      if (!userFound) {
+        this.logger.error('signIn: \n' + this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+
+        throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+      }
+
+      this.verifyPassword(user, userFound.password);
+
+      return { userId: userFound.userId, user: userFound.user };
+    } catch (err) {
+      this.logger.error('signIn: \n' + err.message);
+
+      throw err;
     }
   }
 
@@ -45,7 +75,7 @@ export class UserService {
    * @param {User} user - The user object to be verified.
    * @throws {BadRequestException} If any of the required fields are missing.
    */
-  public verifyFields(user: User) {
+  private verifyFields(user: User) {
     if (!user.email || !user.password || !user.user) {
       this.logger.warn('verifyFields: \n' + this.messagesService.getErrorMessage('FIELD_REQUIRED'));
 
@@ -61,7 +91,7 @@ export class UserService {
  * @throws {ConflictException} If the user already exists.
  * @throws {InternalServerErrorException} If an error occurs during the verification.
  */
-  public async verifyUserExists(user: User): Promise<void> {
+  private async verifyUserExists(user: User): Promise<void> {
     try {
       const userExists = await this.getUser(user);
       
@@ -85,7 +115,7 @@ export class UserService {
    * @param {User} user - The user object containing the password to be encrypted.
    * @return {void} 
    */
-  public encryptPassword(user: User): void {
+  private encryptPassword(user: User): void {
     user.password = this.cryptoService.encrypt(user.password);
   }
 
@@ -96,13 +126,13 @@ export class UserService {
    * @param {string} password - The password to be verified.
    * @return {boolean} True if the password matches, false otherwise.
    */
-  public verifyPassword(user: User, hash: string): boolean {
+  private verifyPassword(user: User, hash: string): boolean {
     const passwordMatch = this.cryptoService.verifyPassword(user.password, hash);
 
     if (!passwordMatch) {
-      this.logger.error('verifyPassword: ' + this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+      this.logger.error('verifyPassword: ' + this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
 
-      throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+      throw new UnauthorizedException(this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
     }
 
     return passwordMatch;
@@ -114,7 +144,7 @@ export class UserService {
    * @param {User} user - The user object containing the email to search for.
    * @return {Promise<User>} A promise that resolves with the found user object.
    */
-  public async getUser(user: User): Promise<User> {
+  private async getUser(user: User): Promise<User> {
     try {
       return await this.userRepository.findOne({
         where: { email: user.email } 

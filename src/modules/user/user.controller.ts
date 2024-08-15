@@ -21,11 +21,7 @@ export class UserController {
     this.logger.log(this.messagesService.getLogMessage('CREATING_USER'));
 
     try {
-      this.userService.verifyFields(req.body);
-      await this.userService.verifyUserExists(req.body);
-      this.userService.encryptPassword(req.body);
-
-      return await this.userService.createUser(req.body);
+      return await this.userService.signUp(req.body);
     } catch (err) {
       this.logger.error('signUp: \n' + err.message);
 
@@ -38,17 +34,7 @@ export class UserController {
     this.logger.log(this.messagesService.getLogMessage('SIGNING_IN'));
 
     try {
-      const user = await this.userService.getUser(req.body);
-
-      if (!user) {
-        this.logger.error('signIn: \n' + this.messagesService.getErrorMessage('USER_NOT_FOUND'));
-
-        throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
-      }
-
-      this.userService.verifyPassword(req.body, user.password);
-
-      return { userId: user.userId, user: user.user };
+      return await this.userService.signIn(req.body);
     } catch (err) {
       this.logger.error('signIn: \n' + err.message);
 

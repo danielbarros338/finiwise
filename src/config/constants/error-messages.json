@@ -2,6 +2,7 @@
   "FIELD_REQUIRED": "Email, username, and password are required",
   "USER_EXISTS": "User already exists",
   "USER_NOT_FOUND": "User not found",
+  "ERROR_SIGNING_IN": "Email or password is wrong",
   "ERROR_SIGNING_UP": "An error occuried while signing up",
   "ERROR_GET_USER": "An error occuried while getting user",
   "ERROR_VERIFY_USER_EXIST": "An error occuried while verifying user exists"
