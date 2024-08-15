@@ -8,7 +8,6 @@ import { User } from '../../database/models/user.model';
 import { MessagesService } from '../../services/messages.service';
 import { CryptoService } from '../../services/crypto.service';
 
-
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
@@ -19,18 +18,14 @@ export class UserService {
     @InjectModel(User) private userRepository: typeof User
   ) {}
 
-    /**
+  /**
    * Creates a new user and returns the user ID.
    *
    * @param {User} user - The user to be created.
    * @return {UserCreatedResponse} An object containing the user ID.
    */
-  public async signUp(user: User): Promise<UserCreatedResponse> {
+  public async createUser(user: User): Promise<UserCreatedResponse> {
     try {
-      this.verifyFields(user);
-      await this.verifyUserExists(user);
-      this.encryptPassword(user);
-
       const response = await this.userRepository.create<User>(user);
       
       this.logger.log(this.messagesService.getLogMessage('USER_CREATED'));
@@ -43,102 +38,13 @@ export class UserService {
     }
   }
 
-  public async signIn(userReq: User): Promise<any> {
-    try {
-      const user = await this.getUser(userReq);
-
-      if (!user) {
-        this.logger.error('signIn: \n' + this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
-
-        throw new BadRequestException(this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
-      }
-
-      this.verifyPassword(userReq, user.password);
-
-      return { userId: user.userId, user: user.user };
-    } catch (err) {
-      this.logger.error('signIn: \n' + err.message);
-
-      throw err
-    }
-  }
-
-    /**
-   * Verifies if the required fields (email, password, and user) are present in the user object.
-   *
-   * @param {User} user - The user object to be verified.
-   * @throws {BadRequestException} If any of the required fields are missing.
-   */
-  private verifyFields(user: User) {
-    if (!user.email || !user.password || !user.user) {
-      this.logger.warn('verifyFields: \n' + this.messagesService.getErrorMessage('FIELD_REQUIRED'));
-
-      throw new BadRequestException(this.messagesService.getErrorMessage('FIELD_REQUIRED'))
-    }
-  }
-
-  /**
- * Verifies if a user exists.
- *
- * @param {User} user - The user object to check.
- * @return {Promise<void>} A Promise that resolves when the verification is complete.
- * @throws {ConflictException} If the user already exists.
- * @throws {InternalServerErrorException} If an error occurs during the verification.
- */
-  private async verifyUserExists(user: User): Promise<void> {
-    try {
-      const userExists = await this.getUser(user);
-      
-      if (userExists) {
-        throw new ConflictException(this.messagesService.getErrorMessage('USER_EXISTS'));
-      }
-    } catch (err) {
-      this.logger.error('verifyUserExists: ' + err.message);
-
-      if (err.status !== 409) {
-        err.message = this.messagesService.getErrorMessage('ERROR_VERIFY_USER_EXIST');
-      }
-
-      throw err;
-    }
-  }
-
-  /**
-   * Encrypts the user's password.
-   *
-   * @param {User} user - The user object containing the password to be encrypted.
-   * @return {void} 
-   */
-  private encryptPassword(user: User): void {
-    user.password = this.cryptoService.encrypt(user.password);
-  }
-
-    /**
-   * Verifies if the provided password matches the user's password.
-   *
-   * @param {User} user - The user object containing the stored password.
-   * @param {string} password - The password to be verified.
-   * @return {boolean} True if the password matches, false otherwise.
-   */
-  private verifyPassword(user: User, hash: string): boolean {
-    const passwordMatch = this.cryptoService.verifyPassword(user.password, hash);
-
-    if (!passwordMatch) {
-      this.logger.error('verifyPassword: ' + this.messagesService.getErrorMessage('USER_NOT_FOUND'));
-
-      throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
-    }
-
-    return passwordMatch;
-  }
-
   /**
    * Retrieves a user from the database based on the provided user object.
    *
    * @param {User} user - The user object containing the email to search for.
    * @return {Promise<User>} A promise that resolves with the found user object.
    */
-  private async getUser(user: User): Promise<User> {
+  public async getUser(user: User): Promise<User> {
     try {
       return await this.userRepository.findOne({
         where: { email: user.email } 

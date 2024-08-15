@@ -4,12 +4,14 @@ import { SequelizeModule } from '@nestjs/sequelize';
 
 import { Config } from './config/database-nest.config';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRoot(Config),
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

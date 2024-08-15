@@ -11,6 +11,7 @@ import { MessagesService } from 'src/services/messages.service';
 @Module({
   imports: [SequelizeModule.forFeature([User])],
   providers: [UserService, CryptoService, MessagesService],
-  controllers: [UserController]
+  controllers: [UserController],
+  exports: [UserService]
 })
 export class UserModule {}
