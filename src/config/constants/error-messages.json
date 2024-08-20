@@ -11,5 +11,10 @@
   "ERROR_SET_EARNING": "An error occuried while saving user earning",
   "ERROR_GET_EARNINGS_BY_USER_ID": "An error occuried while getting user earnings",
   "ERROR_UPDATE_EARNING": "An error occuried while updating user earnings",
-  "ERROR_DELETE_EARNING": "An error occuried while deleting user earning"
+  "ERROR_DELETE_EARNING": "An error occuried while deleting user earning",
+  "ERROR_SET_REVENUE": "An error occuried while saving user revenue",
+  "ERROR_GET_REVENUES_BY_USER_ID": "An error occuried while getting user revenues",
+  "ERROR_UPDATE_REVENUE": "An error occuried while updating user revenue",
+  "ERROR_UPDATE_REVENUES": "An error occuried while updating user revenues",
+  "ERROR_DELETE_REVENUE": "An error occuried while deleting user revenue"
 }

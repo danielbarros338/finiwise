@@ -7,5 +7,10 @@
   "UPDATE_EARNINGS": "Updating user earnings",
   "UPDATE_EARNING": "Updating user earning",
   "GET_EARNINGS_BY_USER_ID": "Getting user earnings by user id",
-  "DELETE_EARNING": "Deleting user earning"
+  "DELETE_EARNING": "Deleting user earning",
+  "SET_REVENUE": "Saving user revenue",
+  "GET_REVENUES_BY_USER_ID": "Getting user revenue by user id",
+  "UPDATE_REVENUE": "Updating user revenue",
+  "UPDATE_REVENUES": "Updating user revenues",
+  "DELETE_REVENUE": "Deleting user revenue"
 }

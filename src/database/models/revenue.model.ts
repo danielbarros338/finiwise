@@ -28,7 +28,7 @@ export class Revenue extends Model<Revenue> {
   public type: Type;
 
   @BelongsTo(() => User, { foreignKey: 'userId', as: 'FK_user_revenue' })
-  public user: User;
+  public userId: User;
 
   @BelongsTo(() => Level, { foreignKey: 'levelId', as: 'FK_level_revenue' })
   public level: Level;

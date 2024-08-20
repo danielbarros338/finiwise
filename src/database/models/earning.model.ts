@@ -24,7 +24,7 @@ export class Earning extends Model<Earning> {
   public name: string;
 
   @BelongsTo(() => Type, { foreignKey: 'typeId', as: 'FK_type_earning' })
-  public type: Type;
+  public typeId: Type;
 
   @BelongsTo(() => User, { foreignKey: 'userId', as: 'FK_user_earning' })
   public userId: User;
