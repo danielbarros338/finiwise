@@ -2,5 +2,6 @@
   "CREATING_USER": "Creating user",
   "USER_CREATED": "User created successfully",
   "SIGNING_IN": "Signing in",
-  "VERYFING_TOKEN": "Veryfing token"
+  "VERYFING_TOKEN": "Veryfing token",
+  "SET_EARNING": "Saving user earning"
 }

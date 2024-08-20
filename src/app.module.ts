@@ -6,6 +6,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Config } from './config/database-nest.config';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { EarningModule } from './modules/earning/earning.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { AuthModule } from './modules/auth/auth.module';
         secret: config.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: config.get<string>('JWT_EXPIRES_IN') }
       })
-    })
+    }),
+    EarningModule
   ],
   controllers: [],
   providers: [],
