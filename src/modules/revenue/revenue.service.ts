@@ -105,7 +105,7 @@ export class RevenueService {
    * @param {Revenue} revenue - The revenue object to be deleted.
    * @return {Promise<number>} A promise that resolves with the number of affected rows.
    */
-  public async deleteEarning(revenue: Revenue): Promise<number> {
+  public async deleteRevenue(revenue: Revenue): Promise<number> {
     this.logger.log(this.messagesServices.getLogMessage('DELETE_REVENUE'));
 
     try {
