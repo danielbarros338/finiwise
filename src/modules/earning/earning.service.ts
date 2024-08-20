@@ -50,13 +50,21 @@ export class EarningService {
  */
   public async getEarningsByUserId(userId: number): Promise<Earning[]> {
     try {
-      const user = await this.userServices.getUserById(userId);
-
-      return await this.earningRepository.findAll<Earning>({ where: { userId: user.userId } });
+      return await this.earningRepository.findAll<Earning>({ where: { userId } });
     } catch (err) {
       this.logger.error('getEarningsByUserId: \n' + err.message);
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_GET_EARNINGS_BY_USER_ID'));
+    }
+  }
+
+  public async updateEarning(earning: Earning): Promise<[affectedCount: number]> {
+    try {
+      return await this.earningRepository.update<Earning>(earning, { where: { earningId: earning.earningId } })
+    } catch (err) {
+      this.logger.error('updateEarning: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_UPDATE_EARNING'));
     }
   }
 }
