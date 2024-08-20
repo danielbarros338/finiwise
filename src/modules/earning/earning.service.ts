@@ -78,6 +78,12 @@ export class EarningService {
     }
   }
 
+  /**
+   * Updates multiple existing earnings in the database.
+   *
+   * @param {Earning[]} earnings - An array of earning objects to be updated.
+   * @return {Promise<[affectedCount: number]>} A promise that resolves with the total number of affected rows.
+   */
   public async updateEarnings(earnings: Earning[]): Promise<[affectedCount: number]> {
     this.logger.log(this.messagesServices.getLogMessage('UPDATE_EARNINGS'));
 
@@ -94,6 +100,24 @@ export class EarningService {
       this.logger.error('updateEarnings: \n' + err.message);
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_UPDATE_EARNING'));
+    }
+  }
+
+  /**
+   * Deletes an existing earning from the database.
+   *
+   * @param {Earning} earning - The earning object to be deleted.
+   * @return {Promise<number>} A promise that resolves with the number of affected rows.
+   */
+  public async deleteEarning(earning: Earning): Promise<number> {
+    this.logger.log(this.messagesServices.getLogMessage('DELETE_EARNING'));
+
+    try {
+      return await this.earningRepository.destroy<Earning>({ where: { earningId: earning.earningId } })
+    } catch (err) {
+      this.logger.error('deleteEarning: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_DELETE_EARNING'));
     }
   }
 }

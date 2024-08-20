@@ -6,5 +6,6 @@
   "SET_EARNING": "Saving user earning",
   "UPDATE_EARNINGS": "Updating user earnings",
   "UPDATE_EARNING": "Updating user earning",
-  "GET_EARNINGS_BY_USER_ID": "Getting user earnings by user id"
+  "GET_EARNINGS_BY_USER_ID": "Getting user earnings by user id",
+  "DELETE_EARNING": "Deleting user earning"
 }

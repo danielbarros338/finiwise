@@ -10,5 +10,6 @@
   "PASSWORD_NOT_VALID": "Password must have at least 8 characters, 1 upper case, 1 lower case, 1 number and 1 special character",
   "ERROR_SET_EARNING": "An error occuried while saving user earning",
   "ERROR_GET_EARNINGS_BY_USER_ID": "An error occuried while getting user earnings",
-  "ERROR_UPDATE_EARNING": "An error occuried while updating user earnings"
+  "ERROR_UPDATE_EARNING": "An error occuried while updating user earnings",
+  "ERROR_DELETE_EARNING": "An error occuried while deleting user earning"
 }
