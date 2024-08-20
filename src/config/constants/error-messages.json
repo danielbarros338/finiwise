@@ -8,5 +8,7 @@
   "ERROR_VERIFY_USER_EXIST": "An error occuried while verifying user exists",
   "EMAIL_NOT_VALID": "Email is not valid",
   "PASSWORD_NOT_VALID": "Password must have at least 8 characters, 1 upper case, 1 lower case, 1 number and 1 special character",
-  "ERROR_SET_EARNING": "An error occuried while saving user earning"
+  "ERROR_SET_EARNING": "An error occuried while saving user earning",
+  "ERROR_GET_EARNINGS_BY_USER_ID": "An error occuried while getting user earnings",
+  "ERROR_UPDATE_EARNING": "An error occuried while updating user earnings"
 }

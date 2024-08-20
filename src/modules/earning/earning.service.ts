@@ -41,7 +41,7 @@ export class EarningService {
     }
   }
 
-/**
+  /**
  * Retrieves all earnings associated with a specific user.
  *
  * @param {number} userId - The ID of the user.
