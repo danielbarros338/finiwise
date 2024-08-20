@@ -3,5 +3,8 @@
   "USER_CREATED": "User created successfully",
   "SIGNING_IN": "Signing in",
   "VERYFING_TOKEN": "Veryfing token",
-  "SET_EARNING": "Saving user earning"
+  "SET_EARNING": "Saving user earning",
+  "UPDATE_EARNINGS": "Updating user earnings",
+  "UPDATE_EARNING": "Updating user earning",
+  "GET_EARNINGS_BY_USER_ID": "Getting user earnings by user id"
 }

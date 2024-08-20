@@ -49,6 +49,8 @@ export class EarningService {
  * @throws {InternalServerErrorException} If there is an error retrieving the earnings.
  */
   public async getEarningsByUserId(userId: number): Promise<Earning[]> {
+    this.logger.log(this.messagesServices.getLogMessage('GET_EARNINGS_BY_USER_ID'));
+
     try {
       return await this.earningRepository.findAll<Earning>({ where: { userId } });
     } catch (err) {
@@ -58,11 +60,38 @@ export class EarningService {
     }
   }
 
+  /**
+   * Updates an existing earning in the database.
+   *
+   * @param {Earning} earning - The earning object to be updated.
+   * @return {Promise<[affectedCount: number]>} A promise that resolves with the number of affected rows.
+   */
   public async updateEarning(earning: Earning): Promise<[affectedCount: number]> {
+    this.logger.log(this.messagesServices.getLogMessage('UPDATE_EARNING'));
+
     try {
       return await this.earningRepository.update<Earning>(earning, { where: { earningId: earning.earningId } })
     } catch (err) {
       this.logger.error('updateEarning: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_UPDATE_EARNING'));
+    }
+  }
+
+  public async updateEarnings(earnings: Earning[]): Promise<[affectedCount: number]> {
+    this.logger.log(this.messagesServices.getLogMessage('UPDATE_EARNINGS'));
+
+    let affectedCount = 0;
+    try {
+      for (const earning of earnings) {
+        const result = await this.earningRepository.update<Earning>(earning, { where: { earningId: earning.earningId } })
+        
+        affectedCount += result[0]
+      }
+
+      return [affectedCount]
+    } catch (err) {
+      this.logger.error('updateEarnings: \n' + err.message);
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_UPDATE_EARNING'));
     }
