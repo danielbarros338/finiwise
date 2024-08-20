@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 
 import { User } from '../../database/models/user.model';
@@ -49,6 +49,30 @@ export class UserService {
       });
     } catch (err) {
       this.logger.error('getUser: \n' +err.message);
+
+      throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_GET_USER'));
+    }
+  }
+
+  /**
+   * Retrieves a user from the database based on the provided user ID.
+   *
+   * @param {number} userId - The ID of the user to be retrieved.
+   * @return {Promise<User>} A promise that resolves with the found user object.
+   */
+  public async getUserById(userId: number): Promise<User> {
+    try {
+      const user = await this.userRepository.findByPk<User>(userId);
+
+      if (!user) {
+        this.logger.error('getUserById: \n' +this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+
+        throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+      }
+
+      return user;
+    } catch (err) {
+      this.logger.error('getUserById: \n' +err.message);
 
       throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_GET_USER'));
     }
