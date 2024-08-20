@@ -2,8 +2,9 @@ import {
   Injectable,
   Logger,
   BadRequestException,
-  InternalServerErrorException,
-  ConflictException
+  UnauthorizedException,
+  ConflictException,
+  InternalServerErrorException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -195,14 +196,28 @@ export class AuthService {
    * @return {Promise<AuthResponse>} A Promise that resolves with an AuthResponse object containing the JWT access token.
    */
   public async setJWT(user: User): Promise<AuthResponse> {
-    const payload = { userId: user.userId, user: user.user, email: user.email };
+    try {
+      const payload = { userId: user.userId, user: user.user, email: user.email };
 
-    return { access_token: await this.jwtService.signAsync(payload) };
+      return { access_token: await this.jwtService.signAsync(payload) };
+    }catch (err) {
+       throw new InternalServerErrorException(err);
+    }
   }
 
+  /**
+   * Verifies a JSON Web Token (JWT) and returns its payload.
+   *
+   * @param {string} token - The JWT token to be verified.
+   * @return {Promise<any>} The payload of the verified JWT token.
+   */
   public async verifyJWT(token: string): Promise<any> {
-    const payload = this.jwtService.verify(token);
+    try {
+      const payload = this.jwtService.verify(token);
 
-    return payload;
+      return payload;
+    } catch (err) {
+      throw new UnauthorizedException(err);
+    }
   }
 }
