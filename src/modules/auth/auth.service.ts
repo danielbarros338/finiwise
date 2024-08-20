@@ -199,4 +199,10 @@ export class AuthService {
 
     return { access_token: await this.jwtService.signAsync(payload) };
   }
+
+  public async verifyJWT(token: string): Promise<any> {
+    const payload = this.jwtService.verify(token);
+
+    return payload;
+  }
 }

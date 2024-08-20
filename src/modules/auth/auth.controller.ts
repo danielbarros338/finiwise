@@ -5,7 +5,8 @@ import {
   Logger,
   HttpCode,
   HttpStatus,
-  HttpException
+  HttpException,
+  Get
 } from '@nestjs/common';
 import { Request } from 'express';
 
@@ -51,4 +52,17 @@ export class AuthController {
     }
   }
 
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Get('/verify-token')
+  async verifyToken(@Req() req: Request): Promise<AuthResponse> {
+    this.logger.log(this.messagesService.getLogMessage('VERIFYING_TOKEN'));
+
+    try {
+      return await this.authService.verifyJWT(req.headers.authorization);
+    } catch (err) {
+      this.logger.error('verifyToken: \n' + err.message);
+
+      throw new HttpException(err.message, err.status);
+    }
+  }
 }

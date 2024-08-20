@@ -1,5 +1,6 @@
 {
   "CREATING_USER": "Creating user",
   "USER_CREATED": "User created successfully",
-  "SIGNING_IN": "Signing in"
+  "SIGNING_IN": "Signing in",
+  "VERYFING_TOKEN": "Veryfing token"
 }
