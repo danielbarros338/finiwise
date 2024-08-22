@@ -15,5 +15,7 @@
   "DELETE_REVENUE": "Deleting user revenue",
   "SET_EMPLOYMENT_COMPENSATION": "Saving user employment compensation",
   "GET_TYPE_ID_BY_CODE": "Getting type id by code",
-  "SET_BONUSES": "Saving user bonuses"
+  "SET_BONUSES": "Saving user bonuses",
+  "CREATE_EARNING": "Creating user earning",
+  "SET_EARNING_TYPE": "Saving user earning type"
 }

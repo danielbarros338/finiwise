@@ -24,31 +24,22 @@ export class EarningService {
     @InjectModel(Bonuses) private readonly bonusesRepository: typeof Bonuses
   ) {}
 
+
   /**
    * Creates a new earning based on the provided earning request.
    *
    * @param {EarningReq} earningReq - The earning request object containing the necessary information to create a new earning.
    * @return {Promise<Earning>} A promise that resolves with the newly created earning.
    */
-  public async setEarning(earningReq: EarningReq): Promise<Earning> {
-    this.logger.log(this.messagesServices.getLogMessage('SET_EARNING'));
+  public async createEarning(earningReq: EarningReq): Promise<Earning> {
+    this.logger.log(this.messagesServices.getLogMessage('CREATE_EARNING'));
 
-    try {
-      const typeId = await this.getTypeIdByCode(earningReq.typeCode);
+    const typeId = await this.getTypeIdByCode(earningReq.typeCode);
+    const earning = await this.setEarning(earningReq, typeId);
 
-      const earning = await this.earningRepository.create<Earning>({
-        ...earningReq,
-        typeId
-      });
+    await this.setEarningType(earningReq, earning);
 
-      await this.setEarningType(earningReq, earning);
-
-      return earning;
-    } catch (err) {
-      this.logger.error('setEarning: \n' + err.message);
-
-      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EARNING'));
-    }
+    return earning;
   }
 
   /**
@@ -132,6 +123,28 @@ export class EarningService {
   }
 
   /**
+   * Creates a new earning in the database.
+   *
+   * @param {EarningReq} earningReq - The earning request object containing the necessary information to create a new earning.
+   * @param {number} typeId - The type ID associated with the earning.
+   * @return {Promise<Earning>} A promise that resolves with the newly created earning.
+   */
+  private async setEarning(earningReq: EarningReq, typeId: number): Promise<Earning> {
+    this.logger.log(this.messagesServices.getLogMessage('SET_EARNING'));
+
+    try {
+      return await this.earningRepository.create<Earning>({
+        ...earningReq,
+        typeId
+      });
+    } catch (err) {
+      this.logger.error('setEarning: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EARNING'));
+    }
+  }
+
+  /**
    * Retrieves the type ID associated with the provided code.
    *
    * @param {string} code - The code to retrieve the type ID for.
@@ -162,27 +175,21 @@ export class EarningService {
     earningReq: EarningReq,
     earning: Earning
   ): Promise<void> {
-    this.logger.log(this.messagesServices.getLogMessage('SET_REVENUE_TYPE'));
+    this.logger.log(this.messagesServices.getLogMessage('SET_EARNING_TYPE'));
 
-    try {
-      switch(earningReq.typeCode) {
-        case 'BON':
-          earning.bonuses = await this.setBonuses(
-            earningReq.option as BonusesOption,
-            earning.earningId
-          );
-          break;
-        case 'INE':
-          earning.employementCompensation = await this.setEmployementCompensation(
-            earningReq.option as EmployementCompensationOption,
-            earning.earningId
-          );
-          break;
-      }
-    } catch (err) {
-      this.logger.error('setEarningType: \n' + err.message);
-
-      throw err;
+    switch(earningReq.typeCode) {
+      case 'BON':
+        earning.bonuses = await this.setBonuses(
+          earningReq.option as BonusesOption,
+          earning.earningId
+        );
+        break;
+      case 'SAL':
+        earning.employementCompensation = await this.setEmployementCompensation(
+          earningReq.option as EmployementCompensationOption,
+          earning.earningId
+        );
+        break;
     }
   }
 
@@ -207,6 +214,9 @@ export class EarningService {
       })
     } catch (err) {
       this.logger.error('setEmployementCompensation: \n' + err.message);
+      this.logger.debug(this.messagesServices.getLogMessage('DELETE_EARNING'));
+
+      await this.earningRepository.destroy({ where: { earningId } });
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EMPLOYMENT_COMPENSATION'));
     }
@@ -222,6 +232,9 @@ export class EarningService {
       })
     } catch (err) {
       this.logger.error('setBonuses: \n' + err.message);
+      this.logger.debug(this.messagesServices.getLogMessage('DELETE_EARNING'));
+
+      await this.earningRepository.destroy({ where: { earningId } });
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_BONUSES'));
     }
