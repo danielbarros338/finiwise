@@ -1,12 +1,14 @@
-import { Injectable, Logger, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, InternalServerErrorException, BadRequestException, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 
 import { Earning } from 'src/database/models/earning.model';
+import { Type } from 'src/database/models/type.model';
+import { EmployementCompensation } from 'src/database/models/employementCompensation.model';
 
 import { EarningReq } from 'src/interfaces/earning.interface';
 
 import { MessagesService } from 'src/services/messages.service';
-import { UserService } from 'src/modules/user/user.service';
+import { EmployementCompensationOption } from 'src/interfaces/employementCompensation.interface';
 
 @Injectable()
 export class EarningService {
@@ -14,8 +16,9 @@ export class EarningService {
 
   constructor(
     private readonly messagesServices: MessagesService,
-    private readonly userServices: UserService,
+    @InjectModel(Type) private readonly typeRepository: typeof Type,
     @InjectModel(Earning) private readonly earningRepository: typeof Earning,
+    @InjectModel(EmployementCompensation) private readonly employementCompensationRepository: typeof EmployementCompensation
   ) {}
 
   /**
@@ -28,12 +31,16 @@ export class EarningService {
     this.logger.log(this.messagesServices.getLogMessage('SET_EARNING'));
 
     try {
-      const user = await this.userServices.getUserById(earningReq.userId);
+      const typeId = await this.getTypeIdByCode(earningReq.typeCode);
 
-      return await this.earningRepository.create<Earning>({
+      const earning = await this.earningRepository.create<Earning>({
         ...earningReq,
-        userId: user
+        typeId
       });
+
+      await this.setEarningType(earningReq, earning);
+
+      return earning;
     } catch (err) {
       this.logger.error('setEarning: \n' + err.message);
 
@@ -118,6 +125,78 @@ export class EarningService {
       this.logger.error('deleteEarning: \n' + err.message);
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_DELETE_EARNING'));
+    }
+  }
+
+  /**
+   * Retrieves the type ID associated with the provided code.
+   *
+   * @param {string} code - The code to retrieve the type ID for.
+   * @return {Promise<number>} A promise that resolves with the type ID.
+   */
+  private async getTypeIdByCode(code: string): Promise<number> {
+    this.logger.log(this.messagesServices.getLogMessage('GET_TYPE_ID_BY_CODE'));
+
+    try {
+      const type = await this.typeRepository.findOne({ attributes: ['typeId'], where: { code } });
+
+      return type.typeId;
+    } catch (err) {
+      this.logger.error('getTypeIdByCode: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_GET_TYPE_ID_BY_CODE'));
+    }
+  }
+
+  /**
+   * Sets the earning type for the provided earning request and earning object.
+   *
+   * @param {EarningReq} earningReq - The earning request object containing the necessary information to set the earning type.
+   * @param {Earning} earning - The earning object to be updated with the new earning type.
+   * @return {Promise<void>} A promise that resolves when the earning type has been successfully set.
+   */
+  private async setEarningType(
+    earningReq: EarningReq,
+    earning: Earning
+  ): Promise<void> {
+    this.logger.log(this.messagesServices.getLogMessage('SET_REVENUE_TYPE'));
+
+    try {
+      switch(earningReq.typeCode) {
+        case 'INE':
+          earning.employementCompensation = await this.setEmployementCompensation(earningReq.option, earning.earningId);
+          break;
+      }
+    } catch (err) {
+      this.logger.error('setEarningType: \n' + err.message);
+
+      throw err;
+    }
+  }
+
+  /**
+ * Creates a new EmployementCompensation record in the database.
+ *
+ * @param {EmployementCompensationOption} option - The option for employment compensation.
+ * @param {number} earningId - The ID of the earning.
+ * @return {Promise<EmployementCompensation>} A promise that resolves with the created EmployementCompensation.
+ * @throws {InternalServerErrorException} If there is an error creating the EmployementCompensation.
+ */
+  private async setEmployementCompensation(
+    option: EmployementCompensationOption,
+    earningId: number
+  ): Promise<EmployementCompensation> {
+    this.logger.log(this.messagesServices.getLogMessage('SET_EMPLOYMENT_COMPENSATION'));
+
+    try {
+      return await this.employementCompensationRepository.create<EmployementCompensation>({
+        earningId,
+        company: option.company
+      })
+    } catch (err) {
+      this.logger.error('setEmployementCompensation: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EMPLOYMENT_COMPENSATION'));
     }
   }
 }

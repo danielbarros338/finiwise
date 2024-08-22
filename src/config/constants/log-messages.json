@@ -12,5 +12,7 @@
   "GET_REVENUES_BY_USER_ID": "Getting user revenue by user id",
   "UPDATE_REVENUE": "Updating user revenue",
   "UPDATE_REVENUES": "Updating user revenues",
-  "DELETE_REVENUE": "Deleting user revenue"
+  "DELETE_REVENUE": "Deleting user revenue",
+  "SET_EMPLOYMENT_COMPENSATION": "Saving user employment compensation",
+  "GET_TYPE_ID_BY_CODE": "Getting type id by code"
 }

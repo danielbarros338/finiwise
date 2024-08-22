@@ -24,10 +24,10 @@ export class Earning extends Model<Earning> {
   public name: string;
 
   @BelongsTo(() => Type, { foreignKey: 'typeId', as: 'FK_type_earning' })
-  public typeId: Type;
+  public typeId: number;
 
   @BelongsTo(() => User, { foreignKey: 'userId', as: 'FK_user_earning' })
-  public userId: User;
+  public userId: number;
 
   @Column({ type: DataType.DOUBLE, allowNull: false })
   public value: number;

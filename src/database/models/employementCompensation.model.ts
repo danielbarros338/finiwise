@@ -15,7 +15,7 @@ export class EmployementCompensation extends Model<EmployementCompensation> {
   public employementCompensationId: number;
 
   @BelongsTo(() => Earning, { foreignKey: 'earningId', as: 'FK_earning_employementCompensation' })
-  public earning: Earning;
+  public earningId: number;
 
   @Column({ type: DataType.STRING(200), allowNull: false })
   public company: string;
