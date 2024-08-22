@@ -18,5 +18,6 @@
   "ERROR_UPDATE_REVENUES": "An error occuried while updating user revenues",
   "ERROR_DELETE_REVENUE": "An error occuried while deleting user revenue",
   "ERROR_GET_TYPE_ID_BY_CODE": "An error occuried while getting type id by code",
-  "ERROR_SET_EMPLOYMENT_COMPENSATION": "An error occuried while saving user employment compensation"
+  "ERROR_SET_EMPLOYMENT_COMPENSATION": "An error occuried while saving user employment compensation",
+  "ERROR_SET_BONUSES": "An error occuried while saving user bonuses"
 }

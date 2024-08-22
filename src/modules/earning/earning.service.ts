@@ -4,11 +4,13 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Earning } from 'src/database/models/earning.model';
 import { Type } from 'src/database/models/type.model';
 import { EmployementCompensation } from 'src/database/models/employementCompensation.model';
+import { Bonuses } from 'src/database/models/bonuses.model';
 
 import { EarningReq } from 'src/interfaces/earning.interface';
+import { EmployementCompensationOption } from 'src/interfaces/employementCompensation.interface';
+import { BonusesOption } from 'src/interfaces/bonuses.interface';
 
 import { MessagesService } from 'src/services/messages.service';
-import { EmployementCompensationOption } from 'src/interfaces/employementCompensation.interface';
 
 @Injectable()
 export class EarningService {
@@ -18,7 +20,8 @@ export class EarningService {
     private readonly messagesServices: MessagesService,
     @InjectModel(Type) private readonly typeRepository: typeof Type,
     @InjectModel(Earning) private readonly earningRepository: typeof Earning,
-    @InjectModel(EmployementCompensation) private readonly employementCompensationRepository: typeof EmployementCompensation
+    @InjectModel(EmployementCompensation) private readonly employementCompensationRepository: typeof EmployementCompensation,
+    @InjectModel(Bonuses) private readonly bonusesRepository: typeof Bonuses
   ) {}
 
   /**
@@ -163,8 +166,17 @@ export class EarningService {
 
     try {
       switch(earningReq.typeCode) {
+        case 'BON':
+          earning.bonuses = await this.setBonuses(
+            earningReq.option as BonusesOption,
+            earning.earningId
+          );
+          break;
         case 'INE':
-          earning.employementCompensation = await this.setEmployementCompensation(earningReq.option, earning.earningId);
+          earning.employementCompensation = await this.setEmployementCompensation(
+            earningReq.option as EmployementCompensationOption,
+            earning.earningId
+          );
           break;
       }
     } catch (err) {
@@ -197,6 +209,21 @@ export class EarningService {
       this.logger.error('setEmployementCompensation: \n' + err.message);
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EMPLOYMENT_COMPENSATION'));
+    }
+  }
+
+  private async setBonuses(option: BonusesOption, earningId: number): Promise<Bonuses> {
+    this.logger.log(this.messagesServices.getLogMessage('SET_BONUSES'));
+
+    try {
+      return await this.bonusesRepository.create<Bonuses>({
+        earningId,
+        description: option.description
+      })
+    } catch (err) {
+      this.logger.error('setBonuses: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_BONUSES'));
     }
   }
 }

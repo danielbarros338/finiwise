@@ -1,4 +1,8 @@
+import { BonusesOption } from "./bonuses.interface";
+import { EarningInvestmentOption } from "./earningInvestment.interface";
 import { EmployementCompensationOption } from "./employementCompensation.interface";
+import { ExtraJobOoption } from "./extraJob.interface";
+import { TaxRefundOption } from "./taxRefund.interface";
 
 export interface EarningReq {
   name: string;
@@ -6,7 +10,12 @@ export interface EarningReq {
   userId: number;
   value: number;
   repeat: boolean;
-  option: EmployementCompensationOption;
+  option: 
+    EmployementCompensationOption|
+    BonusesOption|
+    EarningInvestmentOption|
+    TaxRefundOption|
+    ExtraJobOoption;
 }
 
 export interface Earning extends EarningReq {
