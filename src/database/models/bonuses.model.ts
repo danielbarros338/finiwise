@@ -11,7 +11,7 @@ export class Bonuses extends Model<Bonuses> {
     allowNull: false,
     type: DataType.INTEGER,
   })
-  public bonusesId: number;
+  public bonusId: number;
 
   @BelongsTo(() => Earning, { foreignKey: 'earningId', as: 'FK_earning_bonuses' })
   public earningId: number;
