@@ -282,6 +282,13 @@ export class EarningService {
     }
   }
 
+  /**
+   * Sets the extra job for an earning.
+   *
+   * @param {ExtraJobOption} option - The extra job option.
+   * @param {number} earningId - The ID of the earning.
+   * @return {Promise<ExtraJob>} The created extra job.
+   */
   private async setExtraJob(option: ExtraJobOption, earningId: number): Promise<ExtraJob> {
     this.logger.log(this.messagesServices.getLogMessage('SET_EXTRA_JOB'));
 
