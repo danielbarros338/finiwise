@@ -19,5 +19,6 @@
   "CREATE_EARNING": "Creating user earning",
   "SET_EARNING_TYPE": "Saving user earning type",
   "SET_TAX_REFUND": "Saving user tax refund",
-  "SET_EXTRA_JOB": "Saving user extra job"
+  "SET_EXTRA_JOB": "Saving user extra job",
+  "SET_EARNING_INVESTMENT": "Saving user investment"
 }

@@ -16,8 +16,8 @@ export class EarningInvestment extends Model<EarningInvestment> {
   public earningInvestmentId: number;
 
   @BelongsTo(() => Earning, { foreignKey: 'earningId', as: 'FK_earning_earningInvestment' })
-  public earning: Earning;
+  public earningId: number;
 
   @BelongsTo(() => Investment, { foreignKey: 'investmentId', as: 'FK_investment_earningInvestment' })
-  public investmentId: Investment;
+  public investmentId: number;
 }

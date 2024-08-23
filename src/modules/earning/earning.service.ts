@@ -15,6 +15,8 @@ import { TaxRefundOption } from 'src/interfaces/taxRefund.interface';
 import { MessagesService } from 'src/services/messages.service';
 import { ExtraJobOption } from 'src/interfaces/extraJob.interface';
 import { ExtraJob } from 'src/database/models/extraJob.model';
+import { EarningInvestmentOption } from 'src/interfaces/earningInvestment.interface';
+import { EarningInvestment } from 'src/database/models/earningInvestment.model';
 
 @Injectable()
 export class EarningService {
@@ -27,7 +29,8 @@ export class EarningService {
     @InjectModel(EmployementCompensation) private readonly employementCompensationRepository: typeof EmployementCompensation,
     @InjectModel(Bonuses) private readonly bonusesRepository: typeof Bonuses,
     @InjectModel(TaxRefund) private readonly taxRefundRepository: typeof TaxRefund,
-    @InjectModel(ExtraJob) private readonly extraJobRepository: typeof ExtraJob
+    @InjectModel(ExtraJob) private readonly extraJobRepository: typeof ExtraJob,
+    @InjectModel(EarningInvestment) private readonly earningInvestmentRepository: typeof EarningInvestment
   ) {}
 
 
@@ -184,6 +187,11 @@ export class EarningService {
     this.logger.log(this.messagesServices.getLogMessage('SET_EARNING_TYPE'));
 
     switch(earningReq.typeCode) {
+      case 'INE':
+        earning.earningInvestment = await this.setEarningInvestment(
+          earningReq.option as EarningInvestmentOption,
+          earning.earningId
+        )
       case 'TRE':
         earning.extraJob = await this.setExtraJob(
           earningReq.option as ExtraJobOption,
@@ -305,6 +313,32 @@ export class EarningService {
       await this.earningRepository.destroy({ where: { earningId } });
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EXTRA_JOB'));
+    }
+  }
+
+  /**
+   * Sets the earning investment for a given earning ID.
+   *
+   * @param {EarningInvestmentOption} option - The option for earning investment.
+   * @param {number} earningId - The ID of the earning.
+   * @return {Promise<EarningInvestment>} A promise that resolves with the created EarningInvestment.
+   * @throws {InternalServerErrorException} If there is an error creating the EarningInvestment.
+   */
+  private async setEarningInvestment(option: EarningInvestmentOption, earningId: number): Promise<EarningInvestment> {
+    this.logger.log(this.messagesServices.getLogMessage('SET_EARNING_INVESTMENT'));
+
+    try {
+      return await this.earningInvestmentRepository.create<EarningInvestment>({
+        earningId,
+        investmentId: option.investmentId
+      })
+    } catch (err) {
+      this.logger.error('setEarningInvestment: \n' + err.message);
+      this.logger.debug(this.messagesServices.getLogMessage('DELETE_EARNING'));
+
+      await this.earningRepository.destroy({ where: { earningId } });
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EARNING_INVESTMENT'));
     }
   }
 }

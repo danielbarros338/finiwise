@@ -21,5 +21,6 @@
   "ERROR_SET_EMPLOYMENT_COMPENSATION": "An error occuried while saving user employment compensation",
   "ERROR_SET_BONUSES": "An error occuried while saving user bonuses",
   "ERROR_SET_TAX_REFUND": "An error occuried while saving user tax refund",
-  "ERROR_SET_EXTRA_JOB": "An error occuried while saving user extra job"
+  "ERROR_SET_EXTRA_JOB": "An error occuried while saving user extra job",
+  "ERROR_SET_EARNING_INVESTMENT": "An error occuried while saving user investment"
 }
