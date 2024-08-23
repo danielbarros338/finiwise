@@ -12,6 +12,7 @@ import { EmployementCompensation } from 'src/database/models/employementCompensa
 import { Bonuses } from 'src/database/models/bonuses.model';
 
 import { MessagesService } from 'src/services/messages.service';
+import { TaxRefund } from 'src/database/models/taxRefund.model';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { MessagesService } from 'src/services/messages.service';
       Earning,
       Type,
       EmployementCompensation,
-      Bonuses
+      Bonuses,
+      TaxRefund
     ])
   ],
   controllers: [EarningController],
