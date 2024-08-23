@@ -16,10 +16,10 @@ export class ExtraJob extends Model<ExtraJob> {
   public extraJobId: number;
 
   @BelongsTo(() => Earning, { foreignKey: 'earningId', as: 'FK_earning_extraJob' })
-  public earningId: Earning;
+  public earningId: number;
 
   @HasMany(() => Installment, { foreignKey: 'installmentId', as: 'FK_installment_extraJob' })
-  public installment: Installment;
+  public installmentId: number;
 
   @Column({ type: DataType.STRING(400), allowNull: false })
   public description: string;

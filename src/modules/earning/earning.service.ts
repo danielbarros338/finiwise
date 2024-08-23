@@ -13,6 +13,8 @@ import { BonusesOption } from 'src/interfaces/bonuses.interface';
 import { TaxRefundOption } from 'src/interfaces/taxRefund.interface';
 
 import { MessagesService } from 'src/services/messages.service';
+import { ExtraJobOption } from 'src/interfaces/extraJob.interface';
+import { ExtraJob } from 'src/database/models/extraJob.model';
 
 @Injectable()
 export class EarningService {
@@ -24,7 +26,8 @@ export class EarningService {
     @InjectModel(Earning) private readonly earningRepository: typeof Earning,
     @InjectModel(EmployementCompensation) private readonly employementCompensationRepository: typeof EmployementCompensation,
     @InjectModel(Bonuses) private readonly bonusesRepository: typeof Bonuses,
-    @InjectModel(TaxRefund) private readonly taxRefundRepository: typeof TaxRefund
+    @InjectModel(TaxRefund) private readonly taxRefundRepository: typeof TaxRefund,
+    @InjectModel(ExtraJob) private readonly extraJobRepository: typeof ExtraJob
   ) {}
 
 
@@ -181,6 +184,11 @@ export class EarningService {
     this.logger.log(this.messagesServices.getLogMessage('SET_EARNING_TYPE'));
 
     switch(earningReq.typeCode) {
+      case 'TRE':
+        earning.extraJob = await this.setExtraJob(
+          earningReq.option as ExtraJobOption,
+          earning.earningId
+        )
       case 'RST':
         earning.taxRefund = await this.setTaxRefund(
           earningReq.option as TaxRefundOption,
@@ -265,12 +273,31 @@ export class EarningService {
         publicPartition: option.publicPartition
       })
     } catch (err) {
-      this.logger.error('setBonuses: \n' + err.message);
+      this.logger.error('setTaxRefund: \n' + err.message);
       this.logger.debug(this.messagesServices.getLogMessage('DELETE_EARNING'));
 
       await this.earningRepository.destroy({ where: { earningId } });
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_TAX_REFUND'));
+    }
+  }
+
+  private async setExtraJob(option: ExtraJobOption, earningId: number): Promise<ExtraJob> {
+    this.logger.log(this.messagesServices.getLogMessage('SET_EXTRA_JOB'));
+
+    try {
+      return await this.extraJobRepository.create<ExtraJob>({
+        earningId,
+        description: option.description,
+        installmentId: option.installmentId
+      })
+    } catch (err) {
+      this.logger.error('setExtraJob: \n' + err.message);
+      this.logger.debug(this.messagesServices.getLogMessage('DELETE_EARNING'));
+
+      await this.earningRepository.destroy({ where: { earningId } });
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EXTRA_JOB'));
     }
   }
 }

@@ -20,5 +20,6 @@
   "ERROR_GET_TYPE_ID_BY_CODE": "An error occuried while getting type id by code",
   "ERROR_SET_EMPLOYMENT_COMPENSATION": "An error occuried while saving user employment compensation",
   "ERROR_SET_BONUSES": "An error occuried while saving user bonuses",
-  "ERROR_SET_TAX_REFUND": "An error occuried while saving user tax refund"
+  "ERROR_SET_TAX_REFUND": "An error occuried while saving user tax refund",
+  "ERROR_SET_EXTRA_JOB": "An error occuried while saving user extra job"
 }
