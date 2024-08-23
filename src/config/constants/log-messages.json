@@ -17,5 +17,6 @@
   "GET_TYPE_ID_BY_CODE": "Getting type id by code",
   "SET_BONUSES": "Saving user bonuses",
   "CREATE_EARNING": "Creating user earning",
-  "SET_EARNING_TYPE": "Saving user earning type"
+  "SET_EARNING_TYPE": "Saving user earning type",
+  "SET_TAX_REFUND": "Saving user tax refund"
 }

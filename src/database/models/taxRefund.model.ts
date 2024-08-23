@@ -15,7 +15,7 @@ export class TaxRefund extends Model<TaxRefund> {
   public taxRefundId: number;
 
   @BelongsTo(() => Earning, { foreignKey: 'earningId', as: 'FK_earning_taxRefund' })
-  public earning: Earning;
+  public earningId: number;
 
   @Column({ type: DataType.STRING(200), allowNull: false })
   public publicPartition: string;

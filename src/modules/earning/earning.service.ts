@@ -5,10 +5,12 @@ import { Earning } from 'src/database/models/earning.model';
 import { Type } from 'src/database/models/type.model';
 import { EmployementCompensation } from 'src/database/models/employementCompensation.model';
 import { Bonuses } from 'src/database/models/bonuses.model';
+import { TaxRefund } from 'src/database/models/taxRefund.model';
 
 import { EarningReq } from 'src/interfaces/earning.interface';
 import { EmployementCompensationOption } from 'src/interfaces/employementCompensation.interface';
 import { BonusesOption } from 'src/interfaces/bonuses.interface';
+import { TaxRefundOption } from 'src/interfaces/taxRefund.interface';
 
 import { MessagesService } from 'src/services/messages.service';
 
@@ -21,7 +23,8 @@ export class EarningService {
     @InjectModel(Type) private readonly typeRepository: typeof Type,
     @InjectModel(Earning) private readonly earningRepository: typeof Earning,
     @InjectModel(EmployementCompensation) private readonly employementCompensationRepository: typeof EmployementCompensation,
-    @InjectModel(Bonuses) private readonly bonusesRepository: typeof Bonuses
+    @InjectModel(Bonuses) private readonly bonusesRepository: typeof Bonuses,
+    @InjectModel(TaxRefund) private readonly taxRefundRepository: typeof TaxRefund
   ) {}
 
 
@@ -178,6 +181,12 @@ export class EarningService {
     this.logger.log(this.messagesServices.getLogMessage('SET_EARNING_TYPE'));
 
     switch(earningReq.typeCode) {
+      case 'RST':
+        earning.taxRefund = await this.setTaxRefund(
+          earningReq.option as TaxRefundOption,
+          earning.earningId
+        );
+        break;
       case 'BON':
         earning.bonuses = await this.setBonuses(
           earningReq.option as BonusesOption,
@@ -237,6 +246,31 @@ export class EarningService {
       await this.earningRepository.destroy({ where: { earningId } });
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_BONUSES'));
+    }
+  }
+
+  /**
+   * Sets the tax refund for an earning.
+   *
+   * @param {TaxRefundOption} option - The tax refund option.
+   * @param {number} earningId - The ID of the earning.
+   * @return {Promise<TaxRefund>} The created tax refund.
+   */
+  private async setTaxRefund(option: TaxRefundOption, earningId: number): Promise<TaxRefund> {
+    this.logger.log(this.messagesServices.getLogMessage('SET_TAX_REFUND'));
+
+    try {
+      return await this.taxRefundRepository.create<TaxRefund>({
+        earningId,
+        publicPartition: option.publicPartition
+      })
+    } catch (err) {
+      this.logger.error('setBonuses: \n' + err.message);
+      this.logger.debug(this.messagesServices.getLogMessage('DELETE_EARNING'));
+
+      await this.earningRepository.destroy({ where: { earningId } });
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_TAX_REFUND'));
     }
   }
 }
