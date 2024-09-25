@@ -60,7 +60,7 @@ export class AuthService {
    * @param {any} userReq - The user's request data.
    * @return {Promise<any>} A promise that resolves to an object containing the JWT access token.
    */
-  async signIn(userReq: any): Promise<any> {
+  async signIn(userReq: any): Promise<AuthResponse> {
     try {
       this.verifyFields(userReq, true);
       this.validateEmail(userReq);

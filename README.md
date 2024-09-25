@@ -1,73 +1,90 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Finiwise
 
-## Description
+O Finiwise é um sistema de gestão financeira que permite aos usuários controlar suas finanças de forma eficiente e segura. Ele oferece uma API RESTful para realizar operações de gerenciamento de contas, transações e relatórios financeiros.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Funcionalidades
+- Criar e logar contas, para poder gerar tokens de acesso ao outros endpoints
+- Criação, atualização, leitura e deletar registros de gastos e ganhos
+- Relatórios inteligentes sobre os gastos e ganhos (**Próxima versão**)
 
-## Installation
 
-```bash
-$ yarn install
+## Endpoints Disponíveis
+### auth/signin
+Realiza o login da aplicação, retornando um `access_token` para ser utilizado no header das outras rotas.
+
+**Request**\
+*header*\
+`Content-Type:` application/json
+
+*body*
+```json
+{
+    "email": "<<yourEmailHere>>",
+    "password": "<<yourPasswordHere>>"
+}
 ```
 
-## Running the app
+**Response - HTTP Status 200**
+```json
+{
+    "access_token": "eyJhbGciOiJIUzI1N1IsInR5cCa6IkpXVCcC.eyJ1sc2VySWQiOjE4LCJ2aSdWruUlaWRtaW4iLCJlbWFpbCI6ImaRhSsdDDJhcnErcy5kZXYuY29udGF0b0BnbWFpbC5jb20iLCJpYXQiOjE3MjcyOTMxNTQsImV4cCI63RtyYa23CczE4NH0.DybJ47Efw02xWWHg6L0j5qa_w7CPr-4ChgbY51Aey8U"
+}
+```
+---
+### auth/signup
+Realiza o cadastro de um novo usuário, retornando um `access_token` para já utilizar nos headers das outras rotas.\
+Obs: A senha deve ter pelo menos: 
+  - 1 caractere maiúsculo
+  - 1 minúsculo
+  - 1 caractere especial
+  - 1 numérico
+  - No mínimo, 8 caracteres no total
 
-```bash
-# development
-$ yarn run start
+<br/>
 
-# watch mode
-$ yarn run start:dev
+**Request**
+*header*\
+`Content-Type:` application/json
 
-# production mode
-$ yarn run start:prod
+*body*
+```json
+{
+    "user": "<<yourUserHere>>",
+    "email": "<<yourEmailHere>>",
+    "password": "<<yourPasswordHere>>"
+}
 ```
 
-## Test
+**Response - HTTP Status 201**
+```json
+{
+    "access_token": "eyJhbGciOiJIUzI1N1IsInR5cCa6IkpXVCcC.eyJ1sc2VySWQiOjE4LCJ2aSdWruUlaWRtaW4iLCJlbWFpbCI6ImaRhSsdDDJhcnErcy5kZXYuY29udGF0b0BnbWFpbC5jb20iLCJpYXQiOjE3MjcyOTMxNTQsImV4cCI63RtyYa23CczE4NH0.DybJ47Efw02xWWHg6L0j5qa_w7CPr-4ChgbY51Aey8U"
+}
+```
+---
 
-```bash
-# unit tests
-$ yarn run test
+### auth/verify-token
+Faz a verificação da validade e autenticidade do token.
 
-# e2e tests
-$ yarn run test:e2e
+**Request**\
+*header*\
+`Content-Type`: application/json\
+`Authentication`: <\<yourTokenHere>\>
 
-# test coverage
-$ yarn run test:cov
+*body*
+```json
+{}
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+**Response - HTTP Status 202**
+```json
+{
+    "userId": 9999,
+    "user": "user",
+    "email": "email@email.com",
+    "iat": 1234567890,
+    "exp": 1234567890
+}
+```

@@ -26,7 +26,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('/signin')
-  async signIn(@Req() req: Request): Promise<any> {
+  async signIn(@Req() req: Request): Promise<AuthResponse> {
     this.logger.log(this.messagesService.getLogMessage('SIGNING_IN'));
 
     try {
