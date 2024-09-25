@@ -1,7 +1,7 @@
 import { BonusesOption } from "./bonuses.interface";
 import { EarningInvestmentOption } from "./earningInvestment.interface";
 import { EmployementCompensationOption } from "./employementCompensation.interface";
-import { ExtraJobOoption } from "./extraJob.interface";
+import { ExtraJobOption } from "./extraJob.interface";
 import { TaxRefundOption } from "./taxRefund.interface";
 
 export interface EarningReq {
@@ -15,7 +15,7 @@ export interface EarningReq {
     BonusesOption|
     EarningInvestmentOption|
     TaxRefundOption|
-    ExtraJobOoption;
+    ExtraJobOption;
 }
 
 export interface Earning extends EarningReq {

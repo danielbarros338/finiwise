@@ -12,8 +12,11 @@ import { EarningModule } from './modules/earning/earning.module';
   imports: [
     UserModule,
     AuthModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+    EarningModule,
     SequelizeModule.forRoot(Config),
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,7 +26,6 @@ import { EarningModule } from './modules/earning/earning.module';
         signOptions: { expiresIn: config.get<string>('JWT_EXPIRES_IN') }
       })
     }),
-    EarningModule
   ],
   controllers: [],
   providers: [],

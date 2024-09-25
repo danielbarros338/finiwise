@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    ports:
+      - 3307:3306
+    env_file: .env.production
+    volumes:
+      - mysql-vol:/var/lib/mysql
+      - ./src/database/scripts:/docker-entrypoint-initdb.d
+    networks:
+      - finiwise
+
+  finiwise-backend:
+    build: .
+    restart: always
+    ports:
+      - 3000:3000
+    env_file: .env.production
+    networks:
+      - finiwise
+    depends_on:
+       - mysql
+    command: ['sh', 'setup.sh']
+
+networks:
+  finiwise:
+
+volumes:
+  mysql-vol:

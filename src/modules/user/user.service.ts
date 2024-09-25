@@ -48,7 +48,7 @@ export class UserService {
         where: { email: user.email } 
       });
     } catch (err) {
-      this.logger.error('getUser: \n' +err.message);
+      this.logger.error('getUser: \n' + err);
 
       throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_GET_USER'));
     }

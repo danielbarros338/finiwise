@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('levels', [
+    const levels = [
       {
         name: 'Não Essencial',
         code: 'NES',
@@ -17,10 +17,30 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: null
       },
-    ])
+    ];
+
+    const existingRecords = [];
+
+    for (const level of levels) {
+      const result = await queryInterface.rawSelect(
+        'levels',
+        { where: { code: level.code } },
+        ['levelId']
+      );
+
+      if (result.levelId) {
+        existingRecords.push(result);
+      }
+    }
+
+    const newRecords = levels.filter(level => !existingRecords.includes(level.levelId));
+
+    if (newRecords.length === 0) return;
+
+    await queryInterface.bulkInsert('levels', newRecords);
   },
 
   down: async (queryInterface, Sequelize) => {
-    return await queryInterface.bulkDelete('levels', null, {})
+    return await queryInterface.bulkDelete('levels', null, {});
   }
 };

@@ -1,8 +1,10 @@
 'use strict';
 
+const { Op } = require("sequelize");
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('types', [
+    const types = [
       {
         name: 'Contas',
         code: 'CON',
@@ -73,7 +75,27 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: null
       },
-    ])
+    ]
+
+    const existingRecords = []
+
+    for (const type of types) {
+      const result = await queryInterface.rawSelect(
+        'types',
+        { where: { code: type.code } },
+        ['code']
+      );
+
+      if (result.code) {
+        existingRecords.push(result.code);
+      }
+    }
+
+    const newRecords = types.filter(type => !existingRecords.includes(type.code));
+
+    if (newRecords.length === 0) return;
+
+    await queryInterface.bulkInsert('types', newRecords);
   },
 
   down: async (queryInterface, Sequelize) => {
