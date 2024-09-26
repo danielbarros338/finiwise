@@ -4,21 +4,10 @@
 
 O Finiwise é um sistema de gestão financeira que permite aos usuários controlar suas finanças de forma eficiente e segura. Ele oferece uma API RESTful para realizar operações de gerenciamento de contas, transações e relatórios financeiros.
 
-## Funcionalidades
-- Criar e logar contas, para poder gerar tokens de acesso ao outros endpoints
-- Criação, atualização, leitura e deletar registros de gastos e ganhos
-- Relatórios inteligentes sobre os gastos e ganhos (**Próxima versão**)
-
 ## Índice
-- [Endpoints Disponíveis](#endpoints-disponíveis)
-- [Ganhos](#ganhos)
-- [Despesas](#despesas)
-
-## Endpoints Disponíveis
 - [Finiwise](#finiwise)
-  - [Funcionalidades](#funcionalidades)
   - [Índice](#índice)
-  - [Endpoints Disponíveis](#endpoints-disponíveis)
+  - [Funcionalidades](#funcionalidades)
     - [Auth](#auth)
     - [auth/signin](#authsignin)
     - [auth/signup](#authsignup)
@@ -27,6 +16,13 @@ O Finiwise é um sistema de gestão financeira que permite aos usuários control
     - [earning/create-earning](#earningcreate-earning)
   - [Ganhos](#ganhos)
   - [Despesas](#despesas)
+
+## Funcionalidades
+- Criar e logar contas, para poder gerar tokens de acesso ao outros endpoints
+- Criação, atualização, leitura e deletar registros de gastos e ganhos
+- Relatórios inteligentes sobre os gastos e ganhos (**Próxima versão**)
+
+
 ---
 ### Auth
 ### auth/signin
