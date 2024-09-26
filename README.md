@@ -8,14 +8,13 @@ O Finiwise é um sistema de gestão financeira que permite aos usuários control
 - [Finiwise](#finiwise)
   - [Índice](#índice)
   - [Funcionalidades](#funcionalidades)
+  - [Endpoints](#endpoints)
     - [Auth](#auth)
-    - [auth/signin](#authsignin)
-    - [auth/signup](#authsignup)
-    - [auth/verify-token](#authverify-token)
+      - [auth/signin](#authsignin)
+      - [auth/signup](#authsignup)
+      - [auth/verify-token](#authverify-token)
     - [Earning](#earning)
-    - [earning/create-earning](#earningcreate-earning)
-  - [Ganhos](#ganhos)
-  - [Despesas](#despesas)
+      - [earning/create-earning](#earningcreate-earning)
 
 ## Funcionalidades
 - Criar e logar contas, para poder gerar tokens de acesso ao outros endpoints
@@ -23,9 +22,9 @@ O Finiwise é um sistema de gestão financeira que permite aos usuários control
 - Relatórios inteligentes sobre os gastos e ganhos (**Próxima versão**)
 
 
----
+## Endpoints
 ### Auth
-### auth/signin
+#### auth/signin
 Realiza o login da aplicação, retornando um `access_token` para ser utilizado no header das outras rotas.
 
 **Request**\
@@ -47,7 +46,7 @@ Realiza o login da aplicação, retornando um `access_token` para ser utilizado 
 }
 ```
 ---
-### auth/signup
+#### auth/signup
 Realiza o cadastro de um novo usuário, retornando um `access_token` para já utilizar nos headers das outras rotas.\
 Obs: A senha deve ter pelo menos: 
   - 1 caractere maiúsculo
@@ -79,7 +78,7 @@ Obs: A senha deve ter pelo menos:
 ```
 ---
 
-### auth/verify-token
+#### auth/verify-token
 Faz a verificação da validade e autenticidade do token.
 
 **Request**\
@@ -104,7 +103,7 @@ Faz a verificação da validade e autenticidade do token.
 ```
 ---
 ### Earning
-### earning/create-earning
+#### earning/create-earning
 Cria um ganho financeiro, onde se registra o nome do ganho, valor, tipo e informações adicionais de acordo com o tipo de ganho.
 
 **Request**\
@@ -137,7 +136,3 @@ Cria um ganho financeiro, onde se registra o nome do ganho, valor, tipo e inform
     "createdAt": "2024-09-26T00:58:41.602Z"
 }
 ```
-
-## Ganhos
-
-## Despesas
