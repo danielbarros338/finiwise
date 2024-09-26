@@ -9,8 +9,26 @@ O Finiwise é um sistema de gestão financeira que permite aos usuários control
 - Criação, atualização, leitura e deletar registros de gastos e ganhos
 - Relatórios inteligentes sobre os gastos e ganhos (**Próxima versão**)
 
+## Índice
+- [Endpoints Disponíveis](#endpoints-disponíveis)
+- [Ganhos](#ganhos)
+- [Despesas](#despesas)
 
 ## Endpoints Disponíveis
+- [Finiwise](#finiwise)
+  - [Funcionalidades](#funcionalidades)
+  - [Índice](#índice)
+  - [Endpoints Disponíveis](#endpoints-disponíveis)
+    - [Auth](#auth)
+    - [auth/signin](#authsignin)
+    - [auth/signup](#authsignup)
+    - [auth/verify-token](#authverify-token)
+    - [Earning](#earning)
+    - [earning/create-earning](#earningcreate-earning)
+  - [Ganhos](#ganhos)
+  - [Despesas](#despesas)
+---
+### Auth
 ### auth/signin
 Realiza o login da aplicação, retornando um `access_token` para ser utilizado no header das outras rotas.
 
@@ -88,3 +106,42 @@ Faz a verificação da validade e autenticidade do token.
     "exp": 1234567890
 }
 ```
+---
+### Earning
+### earning/create-earning
+Cria um ganho financeiro, onde se registra o nome do ganho, valor, tipo e informações adicionais de acordo com o tipo de ganho.
+
+**Request**\
+*header*\
+`Content-Type`: application/json\
+`Authorization`: <\<yourLoginTokenHere>\>
+
+**body**
+```json
+{
+    "name": "Bonificação por CMV",
+    "typeCode": "BON",
+    "userId": 5,
+    "value": 354.87,
+    "repeat": false,
+    "option": { <<typeOptions>> }
+}
+```
+
+**Response**
+```json
+{
+    "earningId": 24,
+    "name": "Bonificação por CMV",
+    "userId": 18,
+    "value": 354.87,
+    "repeat": false,
+    "typeId": 7,
+    "updatedAt": "2024-09-26T00:58:41.602Z",
+    "createdAt": "2024-09-26T00:58:41.602Z"
+}
+```
+
+## Ganhos
+
+## Despesas
