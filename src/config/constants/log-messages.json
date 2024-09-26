@@ -20,5 +20,7 @@
   "SET_EARNING_TYPE": "Saving user earning type",
   "SET_TAX_REFUND": "Saving user tax refund",
   "SET_EXTRA_JOB": "Saving user extra job",
-  "SET_EARNING_INVESTMENT": "Saving user investment"
+  "SET_EARNING_INVESTMENT": "Saving user investment",
+  "CREATING_WALLET": "Start method createWallet",
+  "GETTING_WALLET": "Start method getWallet"
 }

@@ -15,8 +15,8 @@ export class Wallet extends Model<Wallet> {
   public walletId: number;
 
   @Column({ type: DataType.DOUBLE })
-  public balance: string;
+  public balance: number;
 
   @BelongsTo(() => User, { foreignKey: 'userId', as: 'FK_user_wallet' })
-  public userId: User;
+  public userId: number;
 }
