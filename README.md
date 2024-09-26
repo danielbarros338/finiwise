@@ -89,7 +89,7 @@ Faz a verificação da validade e autenticidade do token.
 **Request**\
 *header*\
 `Content-Type`: application/json\
-`Authentication`: <\<yourTokenHere>\>
+`Authentication`: Bearer <\<yourTokenHere>\>
 
 *body*
 ```json
@@ -114,7 +114,7 @@ Cria um ganho financeiro, onde se registra o nome do ganho, valor, tipo e inform
 **Request**\
 *header*\
 `Content-Type`: application/json\
-`Authorization`: <\<yourLoginTokenHere>\>
+`Authorization`: Bearer <\<yourLoginTokenHere>\>
 
 **body**
 ```json

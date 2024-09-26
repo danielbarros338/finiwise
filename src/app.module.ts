@@ -7,12 +7,14 @@ import { Config } from './config/database-nest.config';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { EarningModule } from './modules/earning/earning.module';
+import { WalletModule } from './modules/wallet/wallet.module';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
     EarningModule,
+    WalletModule,
     SequelizeModule.forRoot(Config),
     ConfigModule.forRoot({
       isGlobal: true

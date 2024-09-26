@@ -32,10 +32,10 @@ import { AuthGuard } from './auth.guard';
     AuthService,
     MessagesService,
     CryptoService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard
-    // }
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    }
   ],
   controllers: [AuthController]
 })

@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 
+import { SkipAuth } from 'src/utils/skip-auth';
+
 import { AuthResponse } from 'src/interfaces/auth.interface';
 
 import { AuthService } from './auth.service';
@@ -24,6 +26,7 @@ export class AuthController {
     public messagesService: MessagesService
   ){}
 
+  @SkipAuth()
   @HttpCode(HttpStatus.OK)
   @Post('/signin')
   async signIn(@Req() req: Request): Promise<AuthResponse> {
@@ -38,6 +41,7 @@ export class AuthController {
     }
   }
 
+  @SkipAuth()
   @HttpCode(HttpStatus.CREATED)
   @Post('/signup')
   async signUp(@Req() req: Request): Promise<AuthResponse> {
@@ -52,6 +56,7 @@ export class AuthController {
     }
   }
 
+  @SkipAuth()
   @HttpCode(HttpStatus.ACCEPTED)
   @Get('/verify-token')
   async verifyToken(@Req() req: Request): Promise<AuthResponse> {

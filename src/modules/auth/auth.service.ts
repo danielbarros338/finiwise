@@ -213,6 +213,10 @@ export class AuthService {
    */
   public async verifyJWT(token: string): Promise<any> {
     try {
+      if (token.includes('Bearer')) {
+        token = token.replace('Bearer ', '');
+      }
+
       const payload = this.jwtService.verify(token);
 
       return payload;
