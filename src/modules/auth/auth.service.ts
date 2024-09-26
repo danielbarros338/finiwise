@@ -61,27 +61,21 @@ export class AuthService {
    * @return {Promise<any>} A promise that resolves to an object containing the JWT access token.
    */
   async signIn(userReq: any): Promise<AuthResponse> {
-    try {
-      this.verifyFields(userReq, true);
-      this.validateEmail(userReq);
-      this.validatePassword(userReq);
+    this.verifyFields(userReq, true);
+    this.validateEmail(userReq);
+    this.validatePassword(userReq);
 
-      const user = await this.userService.getUser(userReq);
+    const user = await this.userService.getUser(userReq);
 
-      if (!user) {
-        this.logger.error('signIn: \n' + this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
+    if (!user) {
+      this.logger.error('signIn: \n' + this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
 
-        throw new BadRequestException(this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
-      }
-
-      this.verifyPassword(userReq, user.password);
-
-      return this.setJWT(user);
-    } catch (err) {
-      this.logger.error('signIn: \n' + err.message);
-
-      throw err
+      throw new BadRequestException(this.messagesService.getErrorMessage('ERROR_SIGNING_IN'));
     }
+
+    this.verifyPassword(userReq, user.password);
+
+    return this.setJWT(user);
   }
 
   /**
@@ -92,15 +86,19 @@ export class AuthService {
    * @return {boolean} True if the password matches the hash, false otherwise.
    */
   private verifyPassword(user: User, hash: string): boolean {
-    const passwordMatch = this.cryptoService.verifyPassword(user.password, hash);
+    try {
+      const passwordMatch = this.cryptoService.verifyPassword(user.password, hash);
 
-    if (!passwordMatch) {
-      this.logger.error('verifyPassword: ' + this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+      if (!passwordMatch) {
+        throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+      }
 
-      throw new BadRequestException(this.messagesService.getErrorMessage('USER_NOT_FOUND'));
+      return passwordMatch;
+    } catch (err) {
+      this.logger.error(err.stack);
+
+      throw err;
     }
-
-    return passwordMatch;
   }
 
   /**
@@ -110,13 +108,19 @@ export class AuthService {
    * @return {boolean} True if the email is valid, otherwise throws a BadRequestException.
    */
   private validateEmail(user: User): boolean {
-    const regEx =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    try {
+      const regEx =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    if(regEx.test(user.email)) {
-      return true;
-    } else {
-      throw new BadRequestException(this.messagesService.getErrorMessage('EMAIL_NOT_VALID'));
-    };
+      if(regEx.test(user.email)) {
+        return true;
+      } else {
+        throw new BadRequestException(this.messagesService.getErrorMessage('EMAIL_NOT_VALID'));
+      };
+    } catch (err) {
+      this.logger.error(err.stack);
+      
+      throw err;
+    }
   }
 
   /**
@@ -126,13 +130,19 @@ export class AuthService {
    * @return {boolean} True if the password is valid, otherwise throws a BadRequestException.
    */
   private validatePassword(user: User): boolean {
-    const regEx = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    try {
+      const regEx = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    if(regEx.test(user.password)) {
-      return true;
-    } else {
-      throw new BadRequestException(this.messagesService.getErrorMessage('PASSWORD_NOT_VALID'));
-    };
+      if(regEx.test(user.password)) {
+        return true;
+      } else {
+        throw new BadRequestException(this.messagesService.getErrorMessage('PASSWORD_NOT_VALID'));
+      };
+    } catch (err) {
+      this.logger.error(err.stack);
+
+      throw err;
+    }
   }
 
   /**
@@ -142,14 +152,16 @@ export class AuthService {
    * @throws {BadRequestException} If any of the required fields are missing.
    */
   private verifyFields(user: User, isLogin: boolean) {
-    if ((!user.email || !user.password) && isLogin) {
-      this.logger.warn('verifyFields: \n' + this.messagesService.getErrorMessage('FIELD_REQUIRED'));
+    try {
+      if ((!user.email || !user.password) && isLogin) {
+        throw new BadRequestException(this.messagesService.getErrorMessage('FIELD_REQUIRED'))
+      } else if ((!user.email || !user.password || !user.user) && !isLogin) {  
+        throw new BadRequestException(this.messagesService.getErrorMessage('FIELD_REQUIRED'))
+      }
+    } catch (err) {
+      this.logger.error(err.stack);
 
-      throw new BadRequestException(this.messagesService.getErrorMessage('FIELD_REQUIRED'))
-    } else if ((!user.email || !user.password || !user.user) && !isLogin) {
-      this.logger.warn('verifyFields: \n' + this.messagesService.getErrorMessage('FIELD_REQUIRED'));
-
-      throw new BadRequestException(this.messagesService.getErrorMessage('FIELD_REQUIRED'))
+      throw err;
     }
   }
     
@@ -169,7 +181,7 @@ export class AuthService {
         throw new ConflictException(this.messagesService.getErrorMessage('USER_EXISTS'));
       }
     } catch (err) {
-      this.logger.error('verifyUserExists: ' + err.message);
+      this.logger.error(err.stack);
 
       if (err.status !== 409) {
         err.message = this.messagesService.getErrorMessage('ERROR_VERIFY_USER_EXIST');
@@ -201,7 +213,10 @@ export class AuthService {
 
       return { access_token: await this.jwtService.signAsync(payload) };
     }catch (err) {
-       throw new InternalServerErrorException(err);
+      this.logger.error(err.stack);
+
+      //TODO: create a error message
+      throw new InternalServerErrorException(err);
     }
   }
 
@@ -221,6 +236,9 @@ export class AuthService {
 
       return payload;
     } catch (err) {
+      this.logger.error(err.stack);
+
+      //TODO: create a error message
       throw new UnauthorizedException(err);
     }
   }
