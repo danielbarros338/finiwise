@@ -1,4 +1,4 @@
-import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, Logger, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 
 import { Wallet } from 'src/database/models/wallet.model';
@@ -55,6 +55,12 @@ export class WalletService {
   public async subtractBalance(userId: number, amount: number): Promise<Wallet> {
     this.logger.debug(this.messagesService.getLogMessage('SUBTRACT_WALLET'));
 
+    if (amount <= 0) {
+      throw new BadRequestException(
+        this.messagesService.getErrorMessage('ERROR_INVALID_AMOUNT')
+      );
+    }
+
     const wallet = await this.getWallet(userId);
     const newBalance = wallet.balance - amount;
     
@@ -71,6 +77,12 @@ export class WalletService {
    */
   public async addBalance(userId: number, amount: number): Promise<Wallet> {
     this.logger.debug(this.messagesService.getLogMessage('ADD_WALLET'));
+
+    if (amount <= 0) {
+      throw new BadRequestException(
+        this.messagesService.getErrorMessage('ERROR_INVALID_AMOUNT')
+      );
+    }
 
     const wallet = await this.getWallet(userId);
     const newBalance = wallet.balance + amount;
