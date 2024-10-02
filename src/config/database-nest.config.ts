@@ -14,4 +14,5 @@ export const Config: SequelizeModuleOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   models,
+  logging: false
 }

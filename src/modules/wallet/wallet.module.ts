@@ -12,6 +12,7 @@ import { WalletController } from './wallet.controller';
 @Module({
   imports: [SequelizeModule.forFeature([Wallet])],
   providers: [WalletService, MessagesService],
-  controllers: [WalletController]
+  controllers: [WalletController],
+  exports: [WalletService]
 })
 export class WalletModule {}

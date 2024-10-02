@@ -5,35 +5,30 @@ import { User } from '../../database/models/user.model';
 
 import { MessagesService } from '../../services/messages.service';
 import { CryptoService } from '../../services/crypto.service';
+import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
 
   constructor(
-    private readonly cryptoService: CryptoService,
+    @InjectModel(User) private userRepository: typeof User,
     private readonly messagesService: MessagesService,
-    @InjectModel(User) private userRepository: typeof User
+    private readonly walletService: WalletService
   ) {}
 
   /**
-   * Creates a new user and returns the user ID.
+   * Creates a new user in the database and creates a wallet for the user.
    *
-   * @param {User} user - The user to be created.
-   * @return {UserCreatedResponse} An object containing the user ID.
+   * @param {User} user - The user object to be created.
+   * @return {Promise<User>} A promise that resolves with the created user object.
+   * @throws {InternalServerErrorException} If there is an error creating the user.
    */
   public async createUser(user: User): Promise<User> {
-    try {
-      const response = await this.userRepository.create<User>(user);
-      
-      this.logger.log(this.messagesService.getLogMessage('USER_CREATED'));
+    const userCreated = await this.insertUser(user);
+    await this.walletService.createWallet(userCreated.userId);
 
-      return response;
-    } catch (err) {
-      this.logger.error('createUser: \n' + err.message);
-
-      throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_SIGNING_UP'));
-    }
+    return userCreated;
   }
 
   /**
@@ -75,6 +70,27 @@ export class UserService {
       this.logger.error('getUserById: \n' +err.message);
 
       throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_GET_USER'));
+    }
+  }
+
+  /**
+   * Creates a new user and returns the created user object.
+   *
+   * @param {User} user - The user object to be created.
+   * @return {Promise<User>} A promise that resolves with the created user object.
+   * @throws {InternalServerErrorException} If there is an error creating the user.
+   */
+  private async insertUser(user: User): Promise<User> {
+    try {
+      const response = await this.userRepository.create<User>(user);
+      
+      this.logger.log(this.messagesService.getLogMessage('USER_CREATED'));
+
+      return response;
+    } catch (err) {
+      this.logger.error('createUser: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesService.getErrorMessage('ERROR_SIGNING_UP'));
     }
   }
 }
