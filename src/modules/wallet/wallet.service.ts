@@ -60,6 +60,23 @@ export class WalletService {
     
     return await this.updateWallet(wallet, newBalance);
   }
+
+  /**
+   * Adds the specified amount to the balance of the wallet for the given user ID.
+   *
+   * @param {number} userId - The ID of the user to update the wallet for.
+   * @param {number} amount - The amount to add to the current balance.
+   * @return {Promise<Wallet>} A promise that resolves with the updated wallet object.
+   * @throws {InternalServerErrorException} If there is an error updating the wallet.
+   */
+  public async addBalance(userId: number, amount: number): Promise<Wallet> {
+    this.logger.debug(this.messagesService.getLogMessage('ADD_WALLET'));
+
+    const wallet = await this.getWallet(userId);
+    const newBalance = wallet.balance + amount;
+    
+    return await this.updateWallet(wallet, newBalance);
+  }
   
   /**
    * Retrieves a wallet from the database based on the provided user ID.
