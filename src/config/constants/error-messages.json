@@ -24,5 +24,6 @@
   "ERROR_SET_EXTRA_JOB": "An error occuried while saving user extra job",
   "ERROR_SET_EARNING_INVESTMENT": "An error occuried while saving user investment",
   "ERROR_SET_WALLET": "An error occuried while creating user wallet",
-  "ERROR GET_WALLET": "An error occuried while getting user wallet"
+  "ERROR GET_WALLET": "An error occuried while getting user wallet",
+  "ERROR_UPDATE_WALLET": "An error occuried while updating user wallet"
 }

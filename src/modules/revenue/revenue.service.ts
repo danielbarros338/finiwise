@@ -7,16 +7,26 @@ import { RevenueReq } from 'src/interfaces/revenue.interface';
 
 import { MessagesService } from 'src/services/messages.service';
 import { UserService } from 'src/modules/user/user.service';
+import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class RevenueService {
   public readonly logger = new Logger(RevenueService.name);
 
   constructor(
+    @InjectModel(Revenue) private readonly revenueRepository: typeof Revenue,
     private readonly messagesServices: MessagesService,
     private readonly userServices: UserService,
-    @InjectModel(Revenue) private readonly revenueRepository: typeof Revenue,
+    private readonly walletService: WalletService
   ) {}
+
+  public async createRevenue(revenueReq: RevenueReq): Promise<Revenue> {
+    const revenue = await this.setRevenue(revenueReq);
+
+    await this.walletService.subtractBalance(revenue.userId.userId, revenue.value);
+
+    return revenue;
+  }
 
   /**
    * Creates a new revenue based on the provided revenue request.
@@ -24,7 +34,7 @@ export class RevenueService {
    * @param {RevenueReq} revenueReq - The revenue request object containing the necessary information to create a new revenue.
    * @return {Promise<Revenue>} A promise that resolves with the newly created revenue.
    */
-  public async setRevenue(revenueReq: RevenueReq): Promise<Revenue> {
+  private async setRevenue(revenueReq: RevenueReq): Promise<Revenue> {
     this.logger.log(this.messagesServices.getLogMessage('SET_REVENUE'));
 
     try {

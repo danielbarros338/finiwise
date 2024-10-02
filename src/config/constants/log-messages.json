@@ -22,5 +22,7 @@
   "SET_EXTRA_JOB": "Saving user extra job",
   "SET_EARNING_INVESTMENT": "Saving user investment",
   "CREATING_WALLET": "Start method createWallet",
-  "GETTING_WALLET": "Start method getWallet"
+  "GETTING_WALLET": "Start method getWallet",
+  "SUBTRACT_WALLET": "Start method subtractBalance",
+  "UPDATING_WALLET": "Start method updateWallet"
 }
