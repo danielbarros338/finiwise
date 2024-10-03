@@ -18,6 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migration:generate": "npx sequelize-cli@6.3.0 migration:generate --name",
     "migrate": "npx sequelize-cli@6.3.0 db:migrate --debug",
     "migrate:undo:all": "npx sequelize-cli@6.3.0 db:migrate:undo:all",
     "seed:all": "npx sequelize-cli@6.3.0 db:seed:all",
