@@ -31,6 +31,13 @@ module.exports = {
       balance: {
         type: Sequelize.DOUBLE,
         allowNull: false
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
       }
     });
   },
