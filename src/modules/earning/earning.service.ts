@@ -36,11 +36,13 @@ export class EarningService {
   ) {}
 
 
+
   /**
-   * Creates a new earning based on the provided earning request.
+   * Creates a new earning and adds the corresponding value to the user's balance.
    *
    * @param {EarningReq} earningReq - The earning request object containing the necessary information to create a new earning.
    * @return {Promise<Earning>} A promise that resolves with the newly created earning.
+   * @throws {InternalServerErrorException} If there is an error creating the earning or adding the value to the user's balance.
    */
   public async createEarning(earningReq: EarningReq): Promise<Earning> {
     this.logger.log(this.messagesServices.getLogMessage('CREATE_EARNING'));
