@@ -3,7 +3,9 @@ import { DataType } from 'sequelize-typescript';
 
 import { Earning } from './earning.model';
 
-@Table
+@Table({
+  underscored: true,
+})
 export class TaxRefund extends Model<TaxRefund> {
   @Column({
     primaryKey: true,

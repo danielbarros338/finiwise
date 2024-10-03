@@ -13,7 +13,7 @@ module.exports = {
       cardDebitId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'cardDebits',
+          model: 'card_debits',
           key: 'cardDebitId'
         },
         onUpdate: 'CASCADE',
@@ -22,7 +22,7 @@ module.exports = {
       extraJobId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'extraJobs',
+          model: 'extra_jobs',
           key: 'extraJobId'
         },
         onUpdate: 'CASCADE',

@@ -3,7 +3,9 @@ import { DataType } from 'sequelize-typescript';
 
 import { Card } from './card.model';
 
-@Table
+@Table({
+  underscored: true,
+})
 export class FlagCard extends Model<FlagCard> {
   @Column({
     primaryKey: true,

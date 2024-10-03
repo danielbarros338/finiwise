@@ -4,7 +4,9 @@ import { DataType } from 'sequelize-typescript';
 import { Revenue } from './revenue.model';
 import { Installment } from './installment.model';
 
-@Table
+@Table({
+  underscored: true,
+})
 export class Financing extends Model<Financing> {
   @Column({
     primaryKey: true,

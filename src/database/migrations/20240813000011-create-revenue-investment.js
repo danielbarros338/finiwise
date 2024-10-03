@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable('revenueInvestments', {
+    return await queryInterface.createTable('revenue_investments', {
       revenueInvestmentId: {
         primaryKey: true,
         autoIncrement: true,
@@ -39,6 +39,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return await queryInterface.dropTable('revenueInvestments');
+    return await queryInterface.dropTable('revenue_investments');
   }
 };

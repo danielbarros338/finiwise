@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable('taxRefunds', {
+    return await queryInterface.createTable('tax_refunds', {
       taxRefundId: {
         primaryKey: true,
         autoIncrement: true,
@@ -34,6 +34,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return await queryInterface.dropTable('taxRefunds');
+    return await queryInterface.dropTable('tax_refunds');
   }
 };

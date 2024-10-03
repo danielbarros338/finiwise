@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable('cardDebits', {
+    return await queryInterface.createTable('card_debits', {
       cardDebitId: {
         primaryKey: true,
         autoIncrement: true,
@@ -47,6 +47,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return await queryInterface.dropTable('cardDebits');
+    return await queryInterface.dropTable('card_debits');
   }
 };

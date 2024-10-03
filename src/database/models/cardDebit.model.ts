@@ -5,7 +5,9 @@ import { Revenue } from "./revenue.model";
 import { Card } from "./card.model";
 import { Installment } from "./installment.model";
 
-@Table
+@Table({
+  underscored: true,
+})
 export class CardDebit extends Model<CardDebit> {
   @Column({
     primaryKey: true,

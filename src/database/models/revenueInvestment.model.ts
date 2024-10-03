@@ -4,7 +4,9 @@ import { DataType } from 'sequelize-typescript';
 import { Revenue } from './revenue.model';
 import { Investment } from './investment.model';
 
-@Table
+@Table({
+  underscored: true,
+})
 export class RevenueInvestment extends Model<RevenueInvestment> {
   @Column({
     primaryKey: true,
