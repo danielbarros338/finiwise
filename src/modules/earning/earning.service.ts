@@ -6,17 +6,18 @@ import { Type } from 'src/database/models/type.model';
 import { EmployementCompensation } from 'src/database/models/employementCompensation.model';
 import { Bonuses } from 'src/database/models/bonuses.model';
 import { TaxRefund } from 'src/database/models/taxRefund.model';
+import { ExtraJob } from 'src/database/models/extraJob.model';
+import { EarningInvestment } from 'src/database/models/earningInvestment.model';
 
 import { EarningReq } from 'src/interfaces/earning.interface';
 import { EmployementCompensationOption } from 'src/interfaces/employementCompensation.interface';
 import { BonusesOption } from 'src/interfaces/bonuses.interface';
 import { TaxRefundOption } from 'src/interfaces/taxRefund.interface';
+import { ExtraJobOption } from 'src/interfaces/extraJob.interface';
+import { EarningInvestmentOption } from 'src/interfaces/earningInvestment.interface';
 
 import { MessagesService } from 'src/services/messages.service';
-import { ExtraJobOption } from 'src/interfaces/extraJob.interface';
-import { ExtraJob } from 'src/database/models/extraJob.model';
-import { EarningInvestmentOption } from 'src/interfaces/earningInvestment.interface';
-import { EarningInvestment } from 'src/database/models/earningInvestment.model';
+import { WalletService } from 'src/modules/wallet/wallet.service';
 
 @Injectable()
 export class EarningService {
@@ -24,6 +25,7 @@ export class EarningService {
 
   constructor(
     private readonly messagesServices: MessagesService,
+    private readonly walletService: WalletService,
     @InjectModel(Type) private readonly typeRepository: typeof Type,
     @InjectModel(Earning) private readonly earningRepository: typeof Earning,
     @InjectModel(EmployementCompensation) private readonly employementCompensationRepository: typeof EmployementCompensation,
@@ -47,6 +49,7 @@ export class EarningService {
     const earning = await this.setEarning(earningReq, typeId);
 
     await this.setEarningType(earningReq, earning);
+    await this.walletService.addBalance(earningReq.userId, earningReq.value);
 
     return earning;
   }

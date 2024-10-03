@@ -18,7 +18,7 @@ import { TaxRefund } from "./taxRefund.model";
 import { Type } from "./type.model";
 import { User } from "./user.model";
 import { Wallet } from "./wallet.model";
-
+import { TransactionHistory } from "./transactionHistory.model";
 
 export default [
   User,
@@ -40,5 +40,6 @@ export default [
   Taxes,
   Bonuses,
   EmployementCompensation,
-  Investment
+  Investment,
+  TransactionHistory
 ]

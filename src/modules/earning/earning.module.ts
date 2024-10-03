@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import { UserModule } from 'src/modules/user/user.module';
+import { WalletModule } from 'src/modules/wallet/wallet.module';
 
 import { EarningService } from './earning.service';
 import { EarningController } from './earning.controller';
@@ -19,6 +20,7 @@ import { EarningInvestment } from 'src/database/models/earningInvestment.model';
 @Module({
   imports: [
     UserModule,
+    WalletModule,
     SequelizeModule.forFeature([
       Earning,
       Type,
@@ -26,7 +28,7 @@ import { EarningInvestment } from 'src/database/models/earningInvestment.model';
       Bonuses,
       TaxRefund,
       ExtraJob,
-      EarningInvestment
+      EarningInvestment,
     ])
   ],
   controllers: [EarningController],
