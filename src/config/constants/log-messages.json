@@ -25,5 +25,6 @@
   "GETTING_WALLET": "Start method getWallet",
   "SUBTRACT_WALLET": "Start method subtractBalance",
   "UPDATING_WALLET": "Start method updateWallet",
-  "ADD_WALLET": "Start method addBalance"
+  "ADD_WALLET": "Start method addBalance",
+  "CHANGE_EARNING": "Start method changeEarning"
 }

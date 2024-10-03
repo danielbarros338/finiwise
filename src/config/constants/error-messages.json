@@ -26,5 +26,7 @@
   "ERROR_SET_WALLET": "An error occuried while creating user wallet",
   "ERROR GET_WALLET": "An error occuried while getting user wallet",
   "ERROR_UPDATE_WALLET": "An error occuried while updating user wallet",
-  "ERROR_INVALID_AMOUNT": "Amount must be greater than 0"
+  "ERROR_INVALID_AMOUNT": "Amount must be greater than 0",
+  "ERROR_GET_EARNING_BY_ID": "An error occuried while getting user earning",
+  "ERROR_CHANGE_EARNING": "This earning not exists, please create it first"
 }

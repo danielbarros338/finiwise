@@ -8,6 +8,7 @@ import { Bonuses } from 'src/database/models/bonuses.model';
 import { TaxRefund } from 'src/database/models/taxRefund.model';
 import { ExtraJob } from 'src/database/models/extraJob.model';
 import { EarningInvestment } from 'src/database/models/earningInvestment.model';
+import { TransactionHistory } from 'src/database/models/transactionHistory.model';
 
 import { EarningReq } from 'src/interfaces/earning.interface';
 import { EmployementCompensationOption } from 'src/interfaces/employementCompensation.interface';
@@ -19,6 +20,7 @@ import { EarningInvestmentOption } from 'src/interfaces/earningInvestment.interf
 import { MessagesService } from 'src/services/messages.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 
+
 @Injectable()
 export class EarningService {
   public readonly logger = new Logger(EarningService.name);
@@ -26,6 +28,7 @@ export class EarningService {
   constructor(
     private readonly messagesServices: MessagesService,
     private readonly walletService: WalletService,
+    @InjectModel(TransactionHistory) private readonly transactionHistoryRepository: typeof TransactionHistory,
     @InjectModel(Type) private readonly typeRepository: typeof Type,
     @InjectModel(Earning) private readonly earningRepository: typeof Earning,
     @InjectModel(EmployementCompensation) private readonly employementCompensationRepository: typeof EmployementCompensation,
@@ -45,7 +48,7 @@ export class EarningService {
    * @throws {InternalServerErrorException} If there is an error creating the earning or adding the value to the user's balance.
    */
   public async createEarning(earningReq: EarningReq): Promise<Earning> {
-    this.logger.log(this.messagesServices.getLogMessage('CREATE_EARNING'));
+    this.logger.debug(this.messagesServices.getLogMessage('CREATE_EARNING'));
 
     const typeId = await this.getTypeIdByCode(earningReq.typeCode);
     const earning = await this.setEarning(earningReq, typeId);
@@ -56,6 +59,31 @@ export class EarningService {
     return earning;
   }
 
+  public async changeEarning(earningModified: Earning): Promise<Earning> {
+    this.logger.debug(this.messagesServices.getLogMessage('CHANGE_EARNING'));
+
+    const earning = await this.getEarningById(earningModified.earningId);
+
+    if (!earning) {
+      throw new BadRequestException(this.messagesServices.getErrorMessage('ERROR_CHANGE_EARNING'));
+    }
+
+    const valueDiference = earning.value - earningModified.value;
+
+    if (valueDiference < 0) {
+      await this.walletService.addBalance(earningModified.userId, valueDiference);
+    } else if (valueDiference > 0) {
+      await this.walletService.subtractBalance(earningModified.userId, Math.abs(valueDiference));
+    }
+
+    //TODO: add a transaction history register
+    // CHANGE THE PROJECT DO DDD?
+
+    await this.updateEarning(earningModified);
+
+    return earningModified;
+  }
+
   /**
  * Retrieves all earnings associated with a specific user.
  *
@@ -63,7 +91,7 @@ export class EarningService {
  * @return {Promise<Earning[]>} A promise that resolves with an array of earnings.
  * @throws {InternalServerErrorException} If there is an error retrieving the earnings.
  */
-  public async getEarningsByUserId(userId: number): Promise<Earning[]> {
+  private async getEarningsByUserId(userId: number): Promise<Earning[]> {
     this.logger.log(this.messagesServices.getLogMessage('GET_EARNINGS_BY_USER_ID'));
 
     try {
@@ -81,7 +109,7 @@ export class EarningService {
    * @param {Earning} earning - The earning object to be updated.
    * @return {Promise<[affectedCount: number]>} A promise that resolves with the number of affected rows.
    */
-  public async updateEarning(earning: Earning): Promise<[affectedCount: number]> {
+  private async updateEarning(earning: Earning): Promise<[affectedCount: number]> {
     this.logger.log(this.messagesServices.getLogMessage('UPDATE_EARNING'));
 
     try {
@@ -99,7 +127,7 @@ export class EarningService {
    * @param {Earning[]} earnings - An array of earning objects to be updated.
    * @return {Promise<[affectedCount: number]>} A promise that resolves with the total number of affected rows.
    */
-  public async updateEarnings(earnings: Earning[]): Promise<[affectedCount: number]> {
+  private async updateEarnings(earnings: Earning[]): Promise<[affectedCount: number]> {
     this.logger.log(this.messagesServices.getLogMessage('UPDATE_EARNINGS'));
 
     let affectedCount = 0;
@@ -124,7 +152,7 @@ export class EarningService {
    * @param {Earning} earning - The earning object to be deleted.
    * @return {Promise<number>} A promise that resolves with the number of affected rows.
    */
-  public async deleteEarning(earning: Earning): Promise<number> {
+  private async deleteEarning(earning: Earning): Promise<number> {
     this.logger.log(this.messagesServices.getLogMessage('DELETE_EARNING'));
 
     try {
@@ -344,6 +372,16 @@ export class EarningService {
       await this.earningRepository.destroy({ where: { earningId } });
 
       throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_SET_EARNING_INVESTMENT'));
+    }
+  }
+
+  private async getEarningById(earningId: number): Promise<Earning> {
+    try {
+      return await this.earningRepository.findOne({ where: { earningId } })
+    } catch (err) {
+      this.logger.error('getEarningById: \n' + err.message);
+
+      throw new InternalServerErrorException(this.messagesServices.getErrorMessage('ERROR_GET_EARNING_BY_ID'));
     }
   }
 }
