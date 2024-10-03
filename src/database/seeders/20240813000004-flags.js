@@ -49,7 +49,7 @@ module.exports = {
         ['flagId']
       );
 
-      if (result.flagId) {
+      if (result && result.flagId) {
         existingRecords.push(result);
       }
     }

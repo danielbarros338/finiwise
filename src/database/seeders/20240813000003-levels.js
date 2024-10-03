@@ -28,7 +28,7 @@ module.exports = {
         ['levelId']
       );
 
-      if (result.levelId) {
+      if (result && result.levelId) {
         existingRecords.push(result);
       }
     }

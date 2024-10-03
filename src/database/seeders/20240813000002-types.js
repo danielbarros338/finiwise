@@ -86,7 +86,7 @@ module.exports = {
         ['code']
       );
 
-      if (result.code) {
+      if (result && result.code) {
         existingRecords.push(result.code);
       }
     }
